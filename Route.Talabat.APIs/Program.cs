@@ -28,7 +28,7 @@ namespace Route.Talabat.APIs
             }
 
             app.UseHttpsRedirection();
-
+             
 
             app.MapControllers(); 
             #endregion
