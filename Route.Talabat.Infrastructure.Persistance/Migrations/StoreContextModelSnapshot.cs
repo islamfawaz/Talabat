@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Route.Talabat.Infrastructure.Persistance.Data;
 
 #nullable disable
 
-namespace Route.Talabat.Infrastructure.Persistance.Data.Migrations
+namespace Route.Talabat.Infrastructure.Persistance.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20241007122804_ProductModulesConfiguration")]
-    partial class ProductModulesConfiguration
+    partial class StoreContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +63,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(9,2");
+                        .HasColumnType("decimal(9,2)");
 
                     b.HasKey("Id");
 

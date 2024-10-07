@@ -23,7 +23,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Data.Configuration.Products
                 .IsRequired();
 
             builder.Property(P => P.Price)
-                .HasColumnType("decimal(9,2");
+                .HasColumnType("decimal(9,2)");
 
             builder.HasOne(P => P.Brand)
                 .WithMany()

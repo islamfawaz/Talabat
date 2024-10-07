@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Route.Talabat.Infrastructure.Persistance;
 using Route.Talabat.Infrastructure.Persistance.Data;
@@ -8,7 +9,7 @@ namespace Route.Talabat.APIs
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static  async Task Main(string[] args)
         {
             #region Configure Services
             var builder = WebApplication.CreateBuilder(args);
@@ -20,13 +21,35 @@ namespace Route.Talabat.APIs
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddPersistanceService(builder.Configuration);
-           
-          
+            builder.Services.AddPersistanceService(builder.Configuration);         
 
             #endregion
 
             var app = builder.Build();
+
+            #region Update DataBase
+            using var scope = app.Services.CreateAsyncScope();
+            var services = scope.ServiceProvider;
+            var dbcontext = services.GetRequiredService<StoreContext>();
+            //Ask run tim enviroment for object from store context explicitly
+
+            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+
+            try
+            {
+                var pendingMigration = dbcontext.Database.GetPendingMigrations();
+                if (pendingMigration.Any())
+                    await dbcontext.Database.MigrateAsync();
+
+            }
+            catch (Exception ex)
+            {
+                var logger = loggerFactory.CreateLogger<Program>();
+                logger.LogError(ex, "error has been occur during apply migration");
+
+                throw;
+            } 
+            #endregion
 
             #region Configure Kestrel Middlewares
             // Configure the HTTP request pipeline.
