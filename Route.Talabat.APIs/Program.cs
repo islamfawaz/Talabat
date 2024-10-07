@@ -27,7 +27,7 @@ namespace Route.Talabat.APIs
 
             var app = builder.Build();
 
-            #region Update DataBase
+            #region Update DataBase and Data Seeds
             using var scope = app.Services.CreateAsyncScope();
             var services = scope.ServiceProvider;
             var dbcontext = services.GetRequiredService<StoreContext>();
@@ -40,6 +40,8 @@ namespace Route.Talabat.APIs
                 var pendingMigration = dbcontext.Database.GetPendingMigrations();
                 if (pendingMigration.Any())
                     await dbcontext.Database.MigrateAsync();
+
+              await StoreContextSeed.SeedAsync(dbcontext);
 
             }
             catch (Exception ex)

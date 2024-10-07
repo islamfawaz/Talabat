@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Route.Talabat.Core.Domain\Route.Talabat.Core.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-  </ItemGroup>
-
 </Project>
