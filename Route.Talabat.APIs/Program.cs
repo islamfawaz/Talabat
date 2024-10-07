@@ -1,4 +1,9 @@
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Route.Talabat.Infrastructure.Persistance;
+using Route.Talabat.Infrastructure.Persistance.Data;
+
 namespace Route.Talabat.APIs
 {
     public class Program
@@ -14,6 +19,10 @@ namespace Route.Talabat.APIs
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddPersistanceService(builder.Configuration);
+           
+          
 
             #endregion
 
