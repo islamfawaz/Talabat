@@ -1,5 +1,5 @@
 ﻿using Route.Talabat.Core.Domain.Common;
-using Route.Talabat.Core.Domain.Contract;
+using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.Products;
 using Route.Talabat.Infrastructure.Persistance.Data;
 using Route.Talabat.Infrastructure.Persistance.Repositories;
@@ -44,7 +44,7 @@ namespace Route.Talabat.Infrastructure.Persistance.UnitOfWork
 
 
         public IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>()
-            where TEntity : BaseEntity<TKey>
+            where TEntity : BaseAuditableEntity<TKey>
             where TKey : IEquatable<TKey>
         {
             ///var typeName = typeof(TEntity).Name; // Product 

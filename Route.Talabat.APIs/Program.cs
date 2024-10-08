@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Route.Talabat.APIs.Extensions;
+using Route.Talabat.Application.Abstraction.Abstraction;
 using Route.Talabat.Core.Domain.Contract;
 using Route.Talabat.Infrastructure.Persistance;
 using Route.Talabat.Infrastructure.Persistance.Data;
@@ -23,7 +24,8 @@ namespace Route.Talabat.APIs
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddPersistanceService(builder.Configuration);         
+            builder.Services.AddPersistanceService(builder.Configuration);
+            builder.Services.AddScoped(typeof(ILoggedUserService), typeof(ILoggedUserService));
 
             #endregion
 

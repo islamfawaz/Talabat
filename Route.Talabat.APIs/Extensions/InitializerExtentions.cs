@@ -1,4 +1,4 @@
-﻿using Route.Talabat.Core.Domain.Contract;
+﻿using Route.Talabat.Core.Domain.Contract.Persistence;
 
 namespace Route.Talabat.APIs.Extensions
 {

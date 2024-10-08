@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Route.Talabat.Core.Domain.Contract
+namespace Route.Talabat.Core.Domain.Contract.Persistence
 {
-    public interface IGenericRepository<TEntity , TKey> 
-        where TEntity : BaseEntity<TKey> 
+    public interface IGenericRepository<TEntity, TKey>
+        where TEntity : BaseAuditableEntity<TKey>
         where TKey : IEquatable<TKey>
     {
 

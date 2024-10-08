@@ -1,5 +1,5 @@
 ﻿using Route.Talabat.Core.Domain.Common;
-using Route.Talabat.Core.Domain.Contract;
+using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Infrastructure.Persistance.Data;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Route.Talabat.Infrastructure.Persistance.Repositories
 {
     internal class GenericRepository<TEntity, TKey> : IGenericRepository<TEntity, TKey>
-        where TEntity : BaseEntity<TKey>
+        where TEntity : BaseAuditableEntity<TKey>
         where TKey : IEquatable<TKey>
     {
 
