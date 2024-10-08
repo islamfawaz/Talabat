@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Route.Talabat.Infrastructur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Route.Talabat.Dashboard", "Route.Talabat.Dashboard\Route.Talabat.Dashboard.csproj", "{9703F0E2-FCF2-45F8-8973-E8522CDD6DDF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Route.Talabat.Controllers", "Route.Talabat.Controllers\Route.Talabat.Controllers.csproj", "{BE1A6145-DF84-488D-AC06-42D765F7C43C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{9703F0E2-FCF2-45F8-8973-E8522CDD6DDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9703F0E2-FCF2-45F8-8973-E8522CDD6DDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9703F0E2-FCF2-45F8-8973-E8522CDD6DDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE1A6145-DF84-488D-AC06-42D765F7C43C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE1A6145-DF84-488D-AC06-42D765F7C43C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE1A6145-DF84-488D-AC06-42D765F7C43C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE1A6145-DF84-488D-AC06-42D765F7C43C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{7E60E8E2-08B5-42EE-87A7-04C6BDF42D43} = {62FEF0E9-150E-4D2D-A618-4D213B1704E7}
 		{0166BA5C-69D0-43D7-BA89-40528A879C41} = {62FEF0E9-150E-4D2D-A618-4D213B1704E7}
 		{9703F0E2-FCF2-45F8-8973-E8522CDD6DDF} = {EB8B2EC8-9C25-4A67-92D1-75D742F048DD}
+		{BE1A6145-DF84-488D-AC06-42D765F7C43C} = {7597604C-8162-42D8-B83A-D774E41C6BF6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4212AA2A-5C94-43C1-A948-3BEDF42166ED}

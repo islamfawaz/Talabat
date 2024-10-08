@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Route.Talabat.Application.Abstraction\Route.Talabat.Application.Abstraction.csproj" />
+    <ProjectReference Include="..\Route.Talabat.Controllers\Route.Talabat.Controllers.csproj" />
+    <ProjectReference Include="..\Route.Talabat.Core.Application\Route.Talabat.Core.Application.csproj" />
     <ProjectReference Include="..\Route.Talabat.Infrastructure.Persistance\Route.Talabat.Infrastructure.Persistance.csproj" />
   </ItemGroup>
 
