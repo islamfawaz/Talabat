@@ -35,7 +35,7 @@ namespace Route.Talabat.APIs
             #region  Database Initialize and Data Seeds
             await app.InitializeStoreContextAsync();
             #endregion
-
+             
             #region Configure Kestrel Middlewares
             if (app.Environment.IsDevelopment())
             {
