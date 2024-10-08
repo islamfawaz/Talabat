@@ -39,7 +39,7 @@ namespace Route.Talabat.APIs
             #region Configure Kestrel Middlewares
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
+                app.UseSwagger();  
                 app.UseSwaggerUI();
             }
 
