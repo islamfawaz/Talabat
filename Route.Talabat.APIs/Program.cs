@@ -1,9 +1,17 @@
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Configuration;
+using Route.Talabat.APIs.Extensions;
+using Route.Talabat.Core.Domain.Contract;
+using Route.Talabat.Infrastructure.Persistance;
+using Route.Talabat.Infrastructure.Persistance.Data;
+
 namespace Route.Talabat.APIs
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static  async Task Main(string[] args)
         {
             #region Configure Services
             var builder = WebApplication.CreateBuilder(args);
@@ -15,9 +23,15 @@ namespace Route.Talabat.APIs
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddPersistanceService(builder.Configuration);         
+
             #endregion
 
             var app = builder.Build();
+
+            #region  DataBase Initialize and Data Seeds
+           await  app.InitializeStoreContextAsync();
+            #endregion
 
             #region Configure Kestrel Middlewares
             // Configure the HTTP request pipeline.
