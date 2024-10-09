@@ -14,6 +14,8 @@ namespace Route.Talabat.APIs.Services
         {
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             UserId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            // (Key,Claims) ===>String Encrypted(token)
+            //Dycryption  Token ==>(Key,claims)
         }
     }
 }

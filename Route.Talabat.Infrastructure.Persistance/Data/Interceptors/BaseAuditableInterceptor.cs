@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Diagnostics;
 using Route.Talabat.Application.Abstraction.Abstraction;
 using Route.Talabat.Core.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Route.Talabat.Infrastructure.Persistance.Data.Interceptors
 {
@@ -33,10 +28,10 @@ namespace Route.Talabat.Infrastructure.Persistance.Data.Interceptors
                 {
                     if (entry.State==EntityState.Added)
                     {
-                        entry.Entity.CreatedBy = "";
+                        entry.Entity.CreatedBy = _loggedUserService.UserId;
                         entry.Entity.CreatedOn = utcNow;
                     }
-                    entry.Entity.LastModifiedBy = "";
+                    entry.Entity.LastModifiedBy =_loggedUserService.UserId;
                     entry.Entity.LastModifiedOn = utcNow;
 
                 }
