@@ -1,5 +1,6 @@
 ﻿using Route.Talabat.Core.Domain.Common;
 using Route.Talabat.Core.Domain.Contract.Persistence;
+using Route.Talabat.Core.Domain.Entities.Products;
 using Route.Talabat.Infrastructure.Persistance.Data;
 using System;
 using System.Collections.Generic;
@@ -30,10 +31,22 @@ namespace Route.Talabat.Infrastructure.Persistance.Repositories
 
         public async Task<IEnumerable<TEntity>> GetAllAsync(bool withTracking = false)
         {
+            if (typeof(TEntity) == typeof(Product))
+                return withTracking ? (IEnumerable<TEntity>)await _dbContext.Set<Product>().Include(p => p.Brand).Include(p => p.Category).ToListAsync()
+              : (IEnumerable<TEntity>)await _dbContext.Set<Product>().Include(p => p.Brand).Include(p => p.Category).AsNoTracking().ToListAsync();
 
-            if (withTracking) return await _dbContext.Set<TEntity>().ToListAsync();
 
-            return await _dbContext.Set<TEntity>().ToListAsync();
+            else
+            {
+
+                if (withTracking)
+
+                    return await _dbContext.Set<TEntity>().ToListAsync();
+
+                return await _dbContext.Set<TEntity>().AsNoTracking().ToListAsync();
+            }
+
+
         }
 
         public async Task<TEntity?> GetAsync(TKey id)
