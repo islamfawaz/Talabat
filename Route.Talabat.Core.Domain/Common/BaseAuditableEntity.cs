@@ -10,5 +10,5 @@ namespace Route.Talabat.Core.Domain.Common
         public DateTime CreatedOn { get; set; }= DateTime.UtcNow;
         public required string LastModifiedBy { get; set; } 
         public DateTime LastModifiedOn { get; set; }=DateTime.UtcNow;
-    }
+    } 
 }
