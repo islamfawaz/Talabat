@@ -23,12 +23,12 @@ namespace Route.Talabat.Controllers.Controllers.Products
 
             return Ok(product);
         }
-
+           
         [HttpGet("brands")]//Get:/api/Products/brands
         public async Task<ActionResult<IEnumerable<BrandDto>>>GetBrands()
         {
             var brands =await serviceManager.ProductService.GetBrandsAsync();
-            return Ok(brands);
+            return Ok(brands);  
         }
 
 
@@ -38,7 +38,7 @@ namespace Route.Talabat.Controllers.Controllers.Products
         {
             var categories = await serviceManager.ProductService.GetCategoriesAsync();
             return Ok(categories);
-        }
+        }   
 
     }
 }
