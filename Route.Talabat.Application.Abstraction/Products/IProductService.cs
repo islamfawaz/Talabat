@@ -14,6 +14,7 @@ namespace Route.Talabat.Application.Abstraction.Products
 
         Task<IEnumerable<BrandDto>> GetBrandsAsync();
 
+
         Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
     }
 }
