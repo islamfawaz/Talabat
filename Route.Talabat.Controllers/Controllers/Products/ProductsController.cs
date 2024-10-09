@@ -4,7 +4,7 @@ using Route.Talabat.Application.Abstraction.Products.Models;
 using Route.Talabat.Controllers.Controllers.Base;
 
 namespace Route.Talabat.Controllers.Controllers.Products
-{
+{ 
     public class ProductsController(IServiceManager serviceManager) : ApiControllerBase
     {
         [HttpGet]//Get/api/Products
