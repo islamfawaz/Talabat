@@ -22,8 +22,9 @@ namespace Route.Talabat.Core.Domain.Specifications
 
         public BaseSpecifications(TKey id)
         {
-            Criteria= E=>E.Equals(id);
-           // Includes = new List<Expression<Func<TEntity, object>>>();
+            Criteria = E => E.Id.Equals(id);
+
+            // Includes = new List<Expression<Func<TEntity, object>>>();
         }
     }
 }

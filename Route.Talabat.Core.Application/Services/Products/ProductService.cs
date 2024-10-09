@@ -19,11 +19,14 @@ namespace Route.Talabat.Core.Application.Services.Products
             _mapper = mapper;
         }
         public async Task<ProductReturnDto> GetProductAsync(int id)
-            => _mapper.Map<ProductReturnDto>(await _unitOfWork.GetRepository<Product, int>().GetAsync(id));
+        {
+            var spec = new ProductWithBrandCategorySpecifications(id);
+
+            return _mapper.Map<ProductReturnDto>(await _unitOfWork.GetRepository<Product, int>().GetAsyncWithSpec(spec));
+            
+        }
         public async Task<IEnumerable<ProductReturnDto>> GetProductsAsync()
         {
-
-
             var spec = new ProductWithBrandCategorySpecifications();
             spec.Includes.Add(P => P.Brand!);
 
