@@ -3,6 +3,8 @@ using Route.Talabat.Application.Abstraction.Products;
 using Route.Talabat.Application.Abstraction.Products.Models;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.Products;
+using Route.Talabat.Core.Domain.Specifications;
+using Route.Talabat.Core.Domain.Specifications.Products;
 
 namespace Route.Talabat.Core.Application.Services.Products
 {
@@ -19,7 +21,14 @@ namespace Route.Talabat.Core.Application.Services.Products
         public async Task<ProductReturnDto> GetProductAsync(int id)
             => _mapper.Map<ProductReturnDto>(await _unitOfWork.GetRepository<Product, int>().GetAsync(id));
         public async Task<IEnumerable<ProductReturnDto>> GetProductsAsync()
-            => _mapper.Map<IEnumerable<ProductReturnDto>>(await _unitOfWork.GetRepository<Product, int>().GetAllAsync());
+        {
+
+
+            var spec = new ProductWithBrandCategorySpecifications();
+            spec.Includes.Add(P => P.Brand!);
+
+            return  _mapper.Map<IEnumerable<ProductReturnDto>>(await _unitOfWork.GetRepository<Product, int>().GetAllAsyncWithSpec(spec));
+        }
         public async Task<IEnumerable<BrandDto>> GetBrandsAsync()
       => _mapper.Map<IEnumerable<BrandDto>>(await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync());
         public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()

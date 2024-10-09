@@ -12,8 +12,12 @@ namespace Route.Talabat.Core.Domain.Contract.Persistence
     {
 
         Task<IEnumerable<TEntity>> GetAllAsync(bool withTracking = false);
+        Task<IEnumerable<TEntity>> GetAllAsyncWithSpec(ISpecifications<TEntity,TKey>spec,bool withTracking = false);
 
         Task<TEntity?> GetAsync(TKey id);
+        Task<TEntity?> GetAsyncWithSpec(ISpecifications<TEntity, TKey> spec);
+
+
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);

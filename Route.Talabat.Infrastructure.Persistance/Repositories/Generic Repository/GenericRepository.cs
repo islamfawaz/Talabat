@@ -1,4 +1,5 @@
 ﻿using Route.Talabat.Core.Domain.Common;
+using Route.Talabat.Core.Domain.Contract;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.Products;
 using Route.Talabat.Infrastructure.Persistance.Data;
@@ -31,30 +32,19 @@ namespace Route.Talabat.Infrastructure.Persistance.Repositories
 
         public async Task<IEnumerable<TEntity>> GetAllAsync(bool withTracking = false)
         {
-            if (typeof(TEntity) == typeof(Product))
-                return withTracking ? (IEnumerable<TEntity>)await _dbContext.Set<Product>().Include(p => p.Brand).Include(p => p.Category).ToListAsync()
-              : (IEnumerable<TEntity>)await _dbContext.Set<Product>().Include(p => p.Brand).Include(p => p.Category).AsNoTracking().ToListAsync();
 
 
-            else
-            {
 
-                if (withTracking)
 
-                    return await _dbContext.Set<TEntity>().ToListAsync();
-
-                return await _dbContext.Set<TEntity>().AsNoTracking().ToListAsync();
-            }
+            return withTracking ?
+                     await _dbContext.Set<TEntity>().ToListAsync() :
+                     await _dbContext.Set<TEntity>().AsNoTracking().ToListAsync();
 
 
         }
 
         public async Task<TEntity?> GetAsync(TKey id)
         {
-            if (typeof(TEntity)==typeof(Product))
-            
-               return await _dbContext.Set<Product>().Where(P => P.Id.Equals(id)).Include(P=>P.Brand).Include(P=>P.Category).FirstOrDefaultAsync() as TEntity;
-
             return  await _dbContext.Set<TEntity>().FindAsync(id);
 
         }
@@ -74,7 +64,22 @@ namespace Route.Talabat.Infrastructure.Persistance.Repositories
         public void Delete(TEntity entity)
             => _dbContext.Set<TEntity>().Remove(entity);
 
+        public async Task<IEnumerable<TEntity>> GetAllAsyncWithSpec(ISpecifications<TEntity, TKey> spec, bool withTracking = false)
+        {
+            return await ApplySpecifications(spec).ToListAsync();
+        }
 
+        public async Task<TEntity?> GetAsyncWithSpec(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecifications(spec).FirstOrDefaultAsync();
+        }
+
+        #region Helper
+        private IQueryable<TEntity> ApplySpecifications(ISpecifications<TEntity,TKey>spec)
+        {
+            return SpecificationsEvaluator<TEntity, TKey>.GetQuery(_dbContext.Set<TEntity>(), spec);
+        }
+        #endregion
 
     }
 }
