@@ -50,7 +50,16 @@ namespace Route.Talabat.Infrastructure.Persistance.Repositories
         }
 
         public async Task<TEntity?> GetAsync(TKey id)
-            => await _dbContext.Set<TEntity>().FindAsync(id);
+        {
+            if (typeof(TEntity)==typeof(Product))
+            
+               return await _dbContext.Set<Product>().Where(P => P.Id.Equals(id)).Include(P=>P.Brand).Include(P=>P.Category).FirstOrDefaultAsync() as TEntity;
+
+            return  await _dbContext.Set<TEntity>().FindAsync(id);
+
+        }
+
+
 
 
         public async Task AddAsync(TEntity entity)
