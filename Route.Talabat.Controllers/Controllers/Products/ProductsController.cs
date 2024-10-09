@@ -13,7 +13,7 @@ namespace Route.Talabat.Controllers.Controllers.Products
             var products = await serviceManager.ProductService.GetProductsAsync();
             return Ok(products);
         }
-
+         
         [HttpGet("{id}")]//Get/api/Products/id
         public async Task<ActionResult<IEnumerable<ProductReturnDto>>> GetProducts(int id)
         {
