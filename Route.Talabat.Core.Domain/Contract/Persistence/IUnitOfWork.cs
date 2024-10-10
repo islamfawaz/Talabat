@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Route.Talabat.Core.Domain.Contract
+namespace Route.Talabat.Core.Domain.Contract.Persistence
 {
     public interface IUnitOfWork : IAsyncDisposable
 
@@ -17,7 +17,7 @@ namespace Route.Talabat.Core.Domain.Contract
 
 
         IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>()
-            where TEntity : BaseEntity<TKey> 
+            where TEntity : BaseAuditableEntity<TKey>
             where TKey : IEquatable<TKey>;
 
 

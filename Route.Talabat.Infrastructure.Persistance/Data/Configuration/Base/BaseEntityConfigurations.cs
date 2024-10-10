@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Route.Talabat.Infrastructure.Persistance.Data.Configuration.Base
 {
     public class BaseEntityConfigurations<TEntity, TKey> : IEntityTypeConfiguration<TEntity> where
-        TEntity : BaseEntity<TKey> where TKey : IEquatable<TKey>
+        TEntity : BaseAuditableEntity<TKey> where TKey : IEquatable<TKey>
     {
         public virtual void Configure(EntityTypeBuilder<TEntity> builder)
         {

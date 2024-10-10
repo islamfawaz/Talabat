@@ -1,50 +1,50 @@
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Configuration;
 using Route.Talabat.APIs.Extensions;
-using Route.Talabat.Core.Domain.Contract;
+using Route.Talabat.APIs.Services;
+using Route.Talabat.Application.Abstraction;
+using Route.Talabat.Application.Abstraction.Abstraction;
+using Route.Talabat.Core.Application;
+using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Infrastructure.Persistance;
-using Route.Talabat.Infrastructure.Persistance.Data;
+using Route.Talabat.Infrastructure.Persistance.UnitOfWork;
 
 namespace Route.Talabat.APIs
 {
     public class Program
     {
-        public static  async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             #region Configure Services
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
-            builder.Services.AddPersistanceService(builder.Configuration);         
+            builder.Services.AddPersistanceService(builder.Configuration);
+            builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped<ILoggedUserService, LoggedUserService>();
+            builder.Services.AddControllers().AddApplicationPart(typeof(Controllers.AssemblyInformation).Assembly);
+            builder.Services.AddApplicationService();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             #endregion
 
             var app = builder.Build();
 
-            #region  DataBase Initialize and Data Seeds
-           await  app.InitializeStoreContextAsync();
+            #region  Database Initialize and Data Seeds
+            await app.InitializeStoreContextAsync();
             #endregion
-
+             
             #region Configure Kestrel Middlewares
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
+                app.UseSwagger();  
                 app.UseSwaggerUI();
             }
-
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
-             
-
-            app.MapControllers(); 
+            app.MapControllers();
             #endregion
 
             app.Run();

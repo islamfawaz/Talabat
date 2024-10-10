@@ -1,0 +1,36 @@
+﻿using AutoMapper;
+using Route.Talabat.Application.Abstraction;
+using Route.Talabat.Application.Abstraction.Employee;
+using Route.Talabat.Application.Abstraction.Products;
+using Route.Talabat.Core.Application.Services.Employees;
+using Route.Talabat.Core.Application.Services.Products;
+using Route.Talabat.Core.Domain.Contract.Persistence;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Route.Talabat.Core.Application.Services
+{
+    internal class ServiceManager : IServiceManager
+    {
+        private readonly Lazy<IProductService> _productService;
+        private readonly Lazy<IEmployeeService> _employeeService;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
+
+        public ServiceManager(IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            
+            _productService=new Lazy<IProductService>(()=>new ProductService(unitOfWork,mapper));
+            _employeeService = new Lazy<IEmployeeService> (() => new EmployeeService(unitOfWork, mapper));
+            this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
+        }
+        public IProductService ProductService => _productService.Value;
+        public IEmployeeService EmployeeService => _employeeService.Value;
+
+
+    }
+}
