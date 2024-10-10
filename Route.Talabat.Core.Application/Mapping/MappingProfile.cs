@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Route.Talabat.Application.Abstraction.Employee.Models;
 using Route.Talabat.Application.Abstraction.Products.Models;
+using Route.Talabat.Core.Domain.Entities.Employees;
 using Route.Talabat.Core.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,8 @@ namespace Route.Talabat.Core.Application.Mapping
                 .ForMember(d => d.Category, o => o.MapFrom(s => s.Category!.Name))
                // .ForMember(d=>d.PictureUrl,o=>o.MapFrom(s=> $"{s.PictureUrl}"));
                .ForMember(d => d.PictureUrl, O => O.MapFrom<ProductPictureUrlResolver>());
+
+            CreateMap<Employee, EmployeeToReturnDto>();
 
 
         }

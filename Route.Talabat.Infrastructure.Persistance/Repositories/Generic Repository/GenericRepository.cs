@@ -74,11 +74,13 @@ namespace Route.Talabat.Infrastructure.Persistance.Repositories
             return await ApplySpecifications(spec).FirstOrDefaultAsync();
         }
 
-        #region Helper
-        private IQueryable<TEntity> ApplySpecifications(ISpecifications<TEntity,TKey>spec)
+        #region Helper 
+        private IQueryable<TEntity> ApplySpecifications(ISpecifications<TEntity, TKey> spec, bool withTracking = false)
         {
-            return SpecificationsEvaluator<TEntity, TKey>.GetQuery(_dbContext.Set<TEntity>(), spec);
+            var query = SpecificationsEvaluator<TEntity, TKey>.GetQuery(_dbContext.Set<TEntity>(), spec);
+            return withTracking ? query : query.AsNoTracking();
         }
+
         #endregion
 
     }
