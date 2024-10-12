@@ -9,7 +9,7 @@ namespace Route.Talabat.Application.Abstraction.Products
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductReturnDto>> GetProductsAsync();
+        Task<IEnumerable<ProductReturnDto>> GetProductsAsync(string ?sort);
         Task<ProductReturnDto> GetProductAsync(int id);
 
         Task<IEnumerable<BrandDto>> GetBrandsAsync();

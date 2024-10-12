@@ -14,6 +14,8 @@ namespace Route.Talabat.Core.Domain.Specifications
     {
         public Expression<Func<TEntity, bool>> Criteria { get; set; } = null!; 
         public List<Expression<Func<TEntity, object>>> Includes { get; set; } = new ();
+        public Expression<Func<TEntity, object>> ? OrderBy { get; set; }
+        public Expression<Func<TEntity, object>> ? OrderByDesc { get; set; }
 
         public BaseSpecifications()
         {
@@ -25,6 +27,25 @@ namespace Route.Talabat.Core.Domain.Specifications
             Criteria = E => E.Id.Equals(id);
 
             // Includes = new List<Expression<Func<TEntity, object>>>();
+        }
+
+
+        protected private void AddOrderBy(Expression<Func<TEntity, object>> orderByExpression)
+        {
+            OrderBy = orderByExpression;
+        }
+
+
+        protected private void AddOrderByDesc(Expression<Func<TEntity, object>> orderByExpressionDesc)
+        {
+            OrderByDesc = orderByExpressionDesc;
+        }
+
+
+
+        protected private virtual void  AddInclude()
+        {
+           
         }
     }
 }

@@ -20,6 +20,17 @@ namespace Route.Talabat.Infrastructure.Persistance.Repositories
                 query = query.Where(spec.Criteria);
 
 
+
+            if (spec.OrderByDesc is not null)
+            {
+                query = query.OrderByDescending(spec.OrderByDesc);   
+            }
+
+
+           else if (spec.OrderBy is not null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
             //include Exepression
 
 
