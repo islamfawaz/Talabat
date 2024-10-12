@@ -17,8 +17,9 @@ namespace Route.Talabat.Core.Domain.Specifications
         public Expression<Func<TEntity, object>> ? OrderBy { get; set; }
         public Expression<Func<TEntity, object>> ? OrderByDesc { get; set; }
 
-        public BaseSpecifications()
+        public BaseSpecifications(Expression<Func<TEntity, bool>> criteriaExpression)
         {
+            Criteria = criteriaExpression;
          //   Includes = new List<Expression<Func<TEntity, object>>>();
         }
 
@@ -34,14 +35,17 @@ namespace Route.Talabat.Core.Domain.Specifications
         {
             OrderBy = orderByExpression;
         }
-
+        protected BaseSpecifications()
+        {
+            
+        }
 
         protected private void AddOrderByDesc(Expression<Func<TEntity, object>> orderByExpressionDesc)
         {
             OrderByDesc = orderByExpressionDesc;
         }
 
-
+    
 
         protected private virtual void  AddInclude()
         {

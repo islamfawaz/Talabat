@@ -7,10 +7,17 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Core.Domain.Specifications.Products
 {
-    public class ProductWithBrandCategorySpecifications :BaseSpecifications<Product,int>
+    public class ProductWithBrandCategorySpecifications : BaseSpecifications<Product, int>
     {
-        public ProductWithBrandCategorySpecifications(string ?sort):base()
+        public ProductWithBrandCategorySpecifications(string? sort, int? brandId, int? categoryId) : base(
+
+              P =>
+                  (brandId == null || P.BrandId == brandId.Value)
+                  &&
+                  (categoryId == null || P.CategoryId == categoryId.Value))
         {
+          
+
             AddInclude();
             AddOrderBy(P => P.Name);
 
