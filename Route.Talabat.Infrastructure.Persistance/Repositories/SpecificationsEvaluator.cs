@@ -37,6 +37,12 @@ namespace Route.Talabat.Infrastructure.Persistance.Repositories
             query = spec.Includes.Aggregate(query, (currentQuery, icludeExpression) => currentQuery.Include(icludeExpression));
 
 
+            if (spec.IsPaginate)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
+            }
+
+
             return query;
         }
     }

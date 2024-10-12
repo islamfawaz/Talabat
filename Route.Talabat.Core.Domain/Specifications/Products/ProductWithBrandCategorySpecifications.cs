@@ -9,7 +9,7 @@ namespace Route.Talabat.Core.Domain.Specifications.Products
 {
     public class ProductWithBrandCategorySpecifications : BaseSpecifications<Product, int>
     {
-        public ProductWithBrandCategorySpecifications(string? sort, int? brandId, int? categoryId) : base(
+        public ProductWithBrandCategorySpecifications(string? sort, int? brandId, int? categoryId ,int pageSize,int pageIndex) : base(
 
               P =>
                   (brandId == null || P.BrandId == brandId.Value)
@@ -44,6 +44,10 @@ namespace Route.Talabat.Core.Domain.Specifications.Products
                         break;
                 }
             }
+
+            AddPagination(pageSize * (pageIndex - 1), pageSize);
+
+            
         }
 
   

@@ -26,9 +26,9 @@ namespace Route.Talabat.Core.Application.Services.Products
             return productToReturn;
             
         }
-        public async Task<IEnumerable<ProductReturnDto>> GetProductsAsync(string? sort, int? brandId, int? categoryId)
+        public async Task<IEnumerable<ProductReturnDto>> GetProductsAsync(ProductSpecParams specParams)
         {
-            var spec = new ProductWithBrandCategorySpecifications(sort ,brandId,categoryId);
+            var spec = new ProductWithBrandCategorySpecifications(specParams.Sort, specParams.BrandId, specParams.CategoryId ,specParams.PageSize , specParams.PageIndex);
             var products=await _unitOfWork.GetRepository<Product,int>().GetAllAsyncWithSpec(spec);
 
             var productsToReturn=_mapper.Map<IEnumerable<ProductReturnDto>>(products);
