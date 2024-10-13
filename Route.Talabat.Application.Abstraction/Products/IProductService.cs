@@ -1,4 +1,5 @@
-﻿using Route.Talabat.Application.Abstraction.Products.Models;
+﻿using Route.Talabat.Application.Abstraction.Common;
+using Route.Talabat.Application.Abstraction.Products.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,12 @@ namespace Route.Talabat.Application.Abstraction.Products
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductReturnDto>> GetProductsAsync(ProductSpecParams productSpec);
+        Task<Pagination<ProductReturnDto>> GetProductsAsync(ProductSpecParams productSpec);
         Task<ProductReturnDto> GetProductAsync(int id);
 
         Task<IEnumerable<BrandDto>> GetBrandsAsync();
 
+       
 
         Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
     }

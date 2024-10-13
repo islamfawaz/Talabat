@@ -58,7 +58,10 @@ namespace Route.Talabat.Infrastructure.Persistance.Repositories
 
         public void Update(TEntity entity)
           => _dbContext.Set<TEntity>().Update(entity);
-
+        public async Task<int> GetCountAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecifications(spec).CountAsync();
+        }
 
 
         public void Delete(TEntity entity)
@@ -80,6 +83,8 @@ namespace Route.Talabat.Infrastructure.Persistance.Repositories
             var query = SpecificationsEvaluator<TEntity, TKey>.GetQuery(_dbContext.Set<TEntity>(), spec);
             return withTracking ? query : query.AsNoTracking();
         }
+
+      
 
         #endregion
 
