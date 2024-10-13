@@ -9,9 +9,10 @@ namespace Route.Talabat.Core.Domain.Specifications.Products
 {
     public class ProductWithBrandCategorySpecifications : BaseSpecifications<Product, int>
     {
-        public ProductWithBrandCategorySpecifications(string? sort, int? brandId, int? categoryId ,int pageSize,int pageIndex) : base(
+        public ProductWithBrandCategorySpecifications(string? sort, int? brandId, int? categoryId ,int pageSize,int pageIndex,string ?search) : base(
 
-              P =>
+              P =>(string.IsNullOrEmpty(search) ||P.NormalizedName.Contains(search))
+              &&
                   (brandId == null || P.BrandId == brandId.Value)
                   &&
                   (categoryId == null || P.CategoryId == categoryId.Value))
