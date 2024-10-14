@@ -14,5 +14,15 @@ namespace Route.Talabat.Core.Domain.Contract
 
         public List<Expression<Func<TEntity,object>>> Includes { get; set; }
 
+        public Expression<Func<TEntity,object>> ? OrderBy { get; set; }
+        public Expression<Func<TEntity, object>> ? OrderByDesc { get; set; }
+
+        public int Skip { get; set; }
+        public int Take { get; set; }
+
+        public bool IsPaginate { get; set; }
+
+
+
     }
 }

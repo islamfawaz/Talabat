@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.Application.Abstraction;
+using Route.Talabat.Application.Abstraction.Common;
 using Route.Talabat.Application.Abstraction.Products.Models;
 using Route.Talabat.Controllers.Controllers.Base;
 
@@ -8,9 +9,9 @@ namespace Route.Talabat.Controllers.Controllers.Products
     public class ProductsController(IServiceManager serviceManager) : ApiControllerBase
     {
         [HttpGet]//Get/api/Products
-        public async Task<ActionResult<IEnumerable<ProductReturnDto>>> GetProducts()
+        public async Task<ActionResult<Pagination<ProductReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams)
         {
-            var products = await serviceManager.ProductService.GetProductsAsync();
+            var products = await serviceManager.ProductService.GetProductsAsync(specParams);
             return Ok(products);
         }
          

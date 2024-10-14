@@ -14,9 +14,15 @@ namespace Route.Talabat.Core.Domain.Specifications
     {
         public Expression<Func<TEntity, bool>> Criteria { get; set; } = null!; 
         public List<Expression<Func<TEntity, object>>> Includes { get; set; } = new ();
+        public Expression<Func<TEntity, object>> ? OrderBy { get; set; }
+        public Expression<Func<TEntity, object>> ? OrderByDesc { get; set; }
+        public int Skip { get; set; }
+        public int Take { get; set; }
+        public bool IsPaginate { get; set; }
 
-        public BaseSpecifications()
+        public BaseSpecifications(Expression<Func<TEntity, bool>> criteriaExpression)
         {
+            Criteria = criteriaExpression;
          //   Includes = new List<Expression<Func<TEntity, object>>>();
         }
 
@@ -26,5 +32,36 @@ namespace Route.Talabat.Core.Domain.Specifications
 
             // Includes = new List<Expression<Func<TEntity, object>>>();
         }
+
+
+        protected private void AddOrderBy(Expression<Func<TEntity, object>> orderByExpression)
+        {
+            OrderBy = orderByExpression;
+        }
+        protected BaseSpecifications()
+        {
+            
+        }
+
+        protected private void AddOrderByDesc(Expression<Func<TEntity, object>> orderByExpressionDesc)
+        {
+            OrderByDesc = orderByExpressionDesc;
+        }
+
+    
+       protected private void AddPagination(int skip,int take)
+        {
+            IsPaginate = true;
+            Skip = skip;
+            Take = take;
+        }
+
+
+        protected private virtual void  AddInclude()
+        {
+           
+        }
+
+        
     }
 }

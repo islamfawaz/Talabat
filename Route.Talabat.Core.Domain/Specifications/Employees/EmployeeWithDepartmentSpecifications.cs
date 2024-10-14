@@ -9,6 +9,7 @@ namespace Route.Talabat.Core.Domain.Specifications.Employees
 {
     public class EmployeeWithDepartmentSpecifications :BaseSpecifications<Employee,int>
     {
+        
         public EmployeeWithDepartmentSpecifications():base()
         {
             Includes.Add(E => E.Department!);

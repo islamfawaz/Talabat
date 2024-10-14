@@ -19,6 +19,10 @@ namespace Route.Talabat.Infrastructure.Persistance.Data.Configuration.Products
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(P => P.NormalizedName)
+               .IsRequired()
+               .HasMaxLength(100);
+
             builder.Property(P => P.Description)
                 .IsRequired();
 

@@ -16,7 +16,7 @@ namespace Route.Talabat.Core.Domain.Contract.Persistence
 
         Task<TEntity?> GetAsync(TKey id);
         Task<TEntity?> GetAsyncWithSpec(ISpecifications<TEntity, TKey> spec);
-
+        Task<int> GetCountAsync(ISpecifications<TEntity, TKey> spec);
 
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
