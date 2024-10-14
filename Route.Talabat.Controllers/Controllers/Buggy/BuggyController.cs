@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.Controllers.Controllers.Base;
+using Route.Talabat.Controllers.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Route.Talabat.Controllers.Controllers.Buggy
         [HttpGet("notfound")]
         public IActionResult GetNotFound()
         {
-            return NotFound(new {StatusCode=404,Message="Not Found"});
+            return NotFound(new ApiResponse(404));
         }
 
 
@@ -28,11 +29,11 @@ namespace Route.Talabat.Controllers.Controllers.Buggy
         [HttpGet("badrequest")]
         public IActionResult GetBadRequest()
         {
-            return BadRequest(new { StatusCode = 400, Message = "Bad Request" });
+            return BadRequest(new ApiResponse(400));
         }
 
 
-        [HttpGet("badrequest/{id}")]
+        [HttpGet("badrequest/{id}")] 
         public IActionResult GetValidationError(int id)
         {
             return Ok();
@@ -41,7 +42,7 @@ namespace Route.Talabat.Controllers.Controllers.Buggy
         [HttpGet("unauthorize")]
         public IActionResult GetUnAuthorizeError()
         {
-            return Unauthorized(new { StatusCode = 401, Message = "unAuthorize" });
+            return Unauthorized(new ApiResponse(401));
         }
 
 
