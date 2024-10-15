@@ -19,6 +19,7 @@
     <ProjectReference Include="..\Route.Talabat.Controllers\Route.Talabat.Controllers.csproj" />
     <ProjectReference Include="..\Route.Talabat.Core.Application\Route.Talabat.Core.Application.csproj" />
     <ProjectReference Include="..\Route.Talabat.Infrastructure.Persistance\Route.Talabat.Infrastructure.Persistance.csproj" />
+    <ProjectReference Include="..\Route.Talabat.Infrastructure\Route.Talabat.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

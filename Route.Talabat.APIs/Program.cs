@@ -9,6 +9,7 @@ using Route.Talabat.Core.Application;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Infrastructure.Persistance;
 using Route.Talabat.Infrastructure.Persistance.UnitOfWork;
+using Route.Talabat.Infrastructure;
 
 namespace Route.Talabat.APIs
 {
@@ -50,7 +51,7 @@ namespace Route.Talabat.APIs
             builder.Services.AddApplicationService();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
+            builder.Services.AddInfraStructureService(builder.Configuration);
 
             #endregion
 

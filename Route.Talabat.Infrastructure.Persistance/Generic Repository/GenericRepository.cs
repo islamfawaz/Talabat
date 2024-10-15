@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Route.Talabat.Infrastructure.Persistance.Repositories
+namespace Route.Talabat.Infrastructure.Persistance.Generic_Repositories
 {
     internal class GenericRepository<TEntity, TKey> : IGenericRepository<TEntity, TKey>
         where TEntity : BaseAuditableEntity<TKey>
