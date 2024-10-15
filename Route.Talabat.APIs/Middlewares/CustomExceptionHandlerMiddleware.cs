@@ -25,7 +25,12 @@ namespace Route.Talabat.APIs.Middlewares
                 await _next(context);
                 //Logic Executed with Response
 
+                if (context.Response.StatusCode == 404)
+                {
+                    var response = new ApiResponse(404, $"The request endPoint :{context.Request.Path} is not found");
+                    await context.Response.WriteAsync(response.ToString());
 
+                }
             }
             catch (Exception ex)
             {
