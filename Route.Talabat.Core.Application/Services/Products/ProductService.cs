@@ -6,6 +6,7 @@ using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.Products;
 using Route.Talabat.Core.Domain.Specifications;
 using Route.Talabat.Core.Domain.Specifications.Products;
+using Route.Talabat.Core.Application.Exception;
 
 namespace Route.Talabat.Core.Application.Services.Products
 {
@@ -16,13 +17,17 @@ namespace Route.Talabat.Core.Application.Services.Products
 
         public ProductService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;  
             _mapper = mapper;
         }
         public async Task<ProductReturnDto> GetProductAsync(int id)
         {
             var spec = new ProductWithBrandCategorySpecifications(id);
             var product = await _unitOfWork.GetRepository<Product, int>().GetAsyncWithSpec(spec);
+            if (product is null)
+            {
+                throw new NotfoundException(nameof(Product), id);
+            }
             var productToReturn=_mapper.Map<ProductReturnDto>(product);
             return productToReturn;
             
@@ -31,6 +36,7 @@ namespace Route.Talabat.Core.Application.Services.Products
         {
             var spec = new ProductWithBrandCategorySpecifications(specParams.Sort, specParams.BrandId, specParams.CategoryId, specParams.PageSize, specParams.PageIndex ,specParams.Search);
             var products = await _unitOfWork.GetRepository<Product, int>().GetAllAsyncWithSpec(spec);
+           
             var specCount=new ProductWithFiltrationCountSpecification(specParams.BrandId, specParams.CategoryId,specParams.Search);
             var data = _mapper.Map<IEnumerable<ProductReturnDto>>(products);
             var count=await _unitOfWork.GetRepository<Product,int>().GetCountAsync(specCount);

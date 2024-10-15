@@ -1,15 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
-using Route.Talabat.Application.Abstraction.Basket;
 using Route.Talabat.Application.Abstraction.Basket.Models;
+using Route.Talabat.Application.Abstraction.Basket;
+using Route.Talabat.Core.Application.Exception;
 using Route.Talabat.Core.Domain.Contract.Infrastructure;
 using Route.Talabat.Core.Domain.Entities.Basket;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-//using Route.Talabat.Controllers.Exception;
 
 namespace Route.Talabat.Core.Application.Services.Services
 {
@@ -20,20 +15,19 @@ namespace Route.Talabat.Core.Application.Services.Services
 
         public async Task DeleteCustomerBasketAsync(string basketId)
         {
-           var deleted= await basketRepo.DeleteAsync(basketId);
-            if (!deleted)
-                throw new Exception();
+            var deleted = await basketRepo.DeleteAsync(basketId);
 
-                
+            if (!deleted)
+                throw new NotfoundException(nameof(CustomerBasket), basketId); 
         }
 
         public async Task<CustomerBasketDto> GetCustomerBasketAsync(string basketId)
         {
-            var basket=await basketRepo.GetAsync(basketId);
+            var basket = await basketRepo.GetAsync(basketId);
 
             if (basket is null)
             {
-                throw new Exception();
+                throw new NotfoundException(nameof(CustomerBasket), basketId);
             }
             return mapper.Map<CustomerBasketDto>(basket);
         }
@@ -42,13 +36,20 @@ namespace Route.Talabat.Core.Application.Services.Services
         {
             var basket = mapper.Map<CustomerBasket>(basketDto);
 
+            if (basketDto is null)
+            {
+                throw new BadRequestException("Basket  can't be Null."); 
+            }
+
             var timeSpan = TimeSpan.FromDays(double.Parse(configuration.GetSection("RedisSetting")["TimeToLiveIn"]!));
 
             var updatedBasket = await basketRepo.UpdateAsync(basket, timeSpan);
-            if(updatedBasket is null) throw new Exception();
+            if (updatedBasket is null)
+            {
+                throw new NotfoundException(nameof(CustomerBasket), basket.Id); 
+            }
 
             return basketDto;
         }
-
     }
 }

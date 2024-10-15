@@ -1,32 +1,24 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.Controllers.Controllers.Base;
 using Route.Talabat.Controllers.Errors;
-using Route.Talabat.Controllers.Exception;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Route.Talabat.Controllers.Controllers.Buggy
 {
-    public class BuggyController :ApiControllerBase
+    public class BuggyController : ApiControllerBase
     {
         [HttpGet("notfound")]
         public IActionResult GetNotFound()
         {
-            throw new NotfoundException();
-           // return NotFound(new ApiResponse(404));
+         //  throw new NotfoundException();
+            return NotFound(new ApiResponse(404));
         }
 
 
         [HttpGet("servererror")]
         public IActionResult GetServerError()
         {
-                throw new System.Exception();
+            throw new System.Exception();
         }
 
 
@@ -40,7 +32,7 @@ namespace Route.Talabat.Controllers.Controllers.Buggy
         [HttpGet("badrequest/{id}")]
         public IActionResult GetValidationError(int id)
         {
-          
+
 
             return Ok();
         }
@@ -63,7 +55,7 @@ namespace Route.Talabat.Controllers.Controllers.Buggy
         public IActionResult GetAuthorizeRequest()
         {
             return Ok();
-        } 
+        }
 
     }
 }

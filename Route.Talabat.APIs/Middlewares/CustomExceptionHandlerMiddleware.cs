@@ -1,5 +1,6 @@
-﻿using Route.Talabat.Controllers.Errors;
-using Route.Talabat.Controllers.Exception;
+﻿using Azure;
+using Route.Talabat.Controllers.Errors;
+using Route.Talabat.Core.Application.Exception;
 using System.Net;
 
 namespace Route.Talabat.APIs.Middlewares
@@ -34,43 +35,63 @@ namespace Route.Talabat.APIs.Middlewares
             }
             catch (Exception ex)
             {
-                ApiResponse response;
-                switch (ex)
+
+                #region LogginTODO
+                if (_environment.IsDevelopment())
                 {
-                
-                    case NotfoundException:
-                        context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                        context.Response.ContentType = "application/json";
-                        response = new ApiExceptionResponse(404, ex.Message);
-                        await context.Response.WriteAsync(response.ToString());
+                    _logger.LogError(ex, ex.Message);
 
-                        break;
-
-                    default:
-                        if (_environment.IsDevelopment())
-                        {
-                            _logger.LogError(ex, ex.Message);
-                            response = new ApiExceptionResponse(500, ex.Message, ex.StackTrace?.ToString());
-
-                        }
-
-                        else
-                        {
-                            response = new ApiExceptionResponse(500);
-                        }
-
-
-                        context.Response.StatusCode = 500;
-                        context.Response.ContentType = "application/json";
-
-                        await context.Response.WriteAsync(response.ToString());
-
-                        break;
                 }
 
-      
+                else
+                {
+                }
+
+
+                #endregion
+
+                await HandleExceptionAsync(context, ex);
+
             }
 
+        }
+
+        private async Task HandleExceptionAsync(HttpContext context, Exception ex)
+        {
+            ApiResponse response;
+            switch (ex)
+            {
+
+                case NotfoundException:
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    context.Response.ContentType = "application/json";
+                    response = new ApiExceptionResponse(404, ex.Message);
+                    await context.Response.WriteAsync(response.ToString());
+
+                    break;
+
+
+                case BadRequestException:
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.ContentType = "application/json";
+                    response = new ApiExceptionResponse(400, ex.Message);
+                    await context.Response.WriteAsync(response.ToString());
+
+                    break;
+
+                     default:
+
+                    response = _environment.IsDevelopment() ?
+                        new ApiExceptionResponse((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace?.ToString())
+                        :
+                         new ApiExceptionResponse((int)HttpStatusCode.InternalServerError);
+                    context.Response.StatusCode = 500;
+                    context.Response.ContentType = "application/json";
+
+                    await context.Response.WriteAsync(response.ToString());
+
+                    break;
+            }
         }
     }
 }
