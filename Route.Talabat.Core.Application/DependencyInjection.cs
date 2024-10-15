@@ -18,10 +18,10 @@ namespace Route.Talabat.Core.Application
            services.AddScoped(typeof(IServiceManager), typeof(ServiceManager));
             services.AddScoped(typeof(Func<IBasketService>), (serviceProvider) =>
             {
-                var mapper = serviceProvider.GetRequiredService<Mapper>();
+                var mapper = serviceProvider.GetRequiredService<IMapper>();
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 var basketRepository = serviceProvider.GetRequiredService<IBasketRepository>();
-                return new BasketService(basketRepository, mapper, configuration);
+                return () => new BasketService(basketRepository, mapper, configuration);
             });
             return services;   
         }

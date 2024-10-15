@@ -62,7 +62,7 @@ namespace Route.Talabat.APIs
             #endregion
              
             #region Configure Kestrel Middlewares
-            app.UseMiddleware<CustomExceptionHandlerMiddleware>();  
+            app.UseMiddleware<CustomExceptionHandlerMiddleware>();   
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();  
