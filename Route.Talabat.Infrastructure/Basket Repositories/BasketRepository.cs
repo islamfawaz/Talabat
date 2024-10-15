@@ -19,7 +19,7 @@ namespace Route.Talabat.Infrastructure.Basket_Repositories
             _database = radis.GetDatabase();
         }
 
-        public async Task<bool> Delete(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
             var deleted = await _database.KeyDeleteAsync(id);
             return deleted;

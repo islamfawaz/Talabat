@@ -13,6 +13,6 @@ namespace Route.Talabat.Core.Domain.Contract.Infrastructure
         Task<CustomerBasket?> UpdateAsync(CustomerBasket basket,TimeSpan timeToLive);
 
 
-        Task<bool> Delete(string id);
+        Task<bool> DeleteAsync(string id);
     }
 }

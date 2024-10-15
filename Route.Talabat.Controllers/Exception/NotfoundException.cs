@@ -12,6 +12,7 @@ namespace Route.Talabat.Controllers.Exception
             :base("Not Found")
         {
             
+
         }
     }
 }
