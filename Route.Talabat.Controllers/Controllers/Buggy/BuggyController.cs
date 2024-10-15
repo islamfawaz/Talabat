@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.Controllers.Controllers.Base;
 using Route.Talabat.Controllers.Errors;
+using Route.Talabat.Controllers.Exception;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Route.Talabat.Controllers.Controllers.Buggy
@@ -15,14 +18,15 @@ namespace Route.Talabat.Controllers.Controllers.Buggy
         [HttpGet("notfound")]
         public IActionResult GetNotFound()
         {
-            return NotFound(new ApiResponse(404));
+            throw new NotfoundException();
+           // return NotFound(new ApiResponse(404));
         }
 
 
         [HttpGet("servererror")]
         public IActionResult GetServerError()
         {
-             throw new Exception();
+                throw new System.Exception();
         }
 
 

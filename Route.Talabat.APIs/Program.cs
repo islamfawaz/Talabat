@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.APIs.Extensions;
+using Route.Talabat.APIs.Middlewares;
 using Route.Talabat.APIs.Services;
 using Route.Talabat.Application.Abstraction;
 using Route.Talabat.Application.Abstraction.Abstraction;
@@ -60,6 +61,7 @@ namespace Route.Talabat.APIs
             #endregion
              
             #region Configure Kestrel Middlewares
+            app.UseMiddleware<CustomExceptionHandlerMiddleware>();    
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();  
