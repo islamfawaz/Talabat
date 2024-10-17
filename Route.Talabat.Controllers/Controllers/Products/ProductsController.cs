@@ -3,6 +3,7 @@ using Route.Talabat.Application.Abstraction;
 using Route.Talabat.Application.Abstraction.Common;
 using Route.Talabat.Application.Abstraction.Products.Models;
 using Route.Talabat.Controllers.Controllers.Base;
+using Route.Talabat.Controllers.Errors;
 
 namespace Route.Talabat.Controllers.Controllers.Products
 { 
@@ -19,8 +20,8 @@ namespace Route.Talabat.Controllers.Controllers.Products
         public async Task<ActionResult<IEnumerable<ProductReturnDto>>> GetProducts(int id)
         {
             var product = await serviceManager.ProductService.GetProductAsync(id);
-            if (product == null)
-                return NotFound();
+            //if (product == null)
+            //    return NotFound(new ApiResponse(404,$"the Product with Id {id} is not found"));
 
             return Ok(product);
         }

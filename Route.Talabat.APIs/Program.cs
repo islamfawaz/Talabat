@@ -1,11 +1,15 @@
+using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.APIs.Extensions;
+using Route.Talabat.APIs.Middlewares;
 using Route.Talabat.APIs.Services;
 using Route.Talabat.Application.Abstraction;
 using Route.Talabat.Application.Abstraction.Abstraction;
+using Route.Talabat.Controllers.Errors;
 using Route.Talabat.Core.Application;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Infrastructure.Persistance;
 using Route.Talabat.Infrastructure.Persistance.UnitOfWork;
+using Route.Talabat.Infrastructure;
 
 namespace Route.Talabat.APIs
 {
@@ -17,7 +21,27 @@ namespace Route.Talabat.APIs
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .ConfigureApiBehaviorOptions(option =>
+                {
+                    //option.SuppressModelStateInvalidFilter = true;
+                    option.InvalidModelStateResponseFactory = (actionContext) =>
+                    {
+                        var groupedErrors =actionContext.ModelState
+                       .Where(p => p.Value?.Errors.Count > 0)
+                       .GroupBy(p => p.Key, p => p.Value!.Errors.Select(e => e.ErrorMessage))
+                       .Select(g => new
+                       {
+                        Field = g.Key,  
+                        Errors = g.SelectMany(e => e)  
+                        }).ToList();
+
+                        return new BadRequestObjectResult(new ApiValidationResponse()
+                        {
+                            Errors = groupedErrors
+                        });
+                    };
+                });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddPersistanceService(builder.Configuration);
@@ -27,6 +51,7 @@ namespace Route.Talabat.APIs
             builder.Services.AddApplicationService();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddInfraStructureService(builder.Configuration);
 
             #endregion
 
@@ -37,6 +62,7 @@ namespace Route.Talabat.APIs
             #endregion
              
             #region Configure Kestrel Middlewares
+            app.UseMiddleware<CustomExceptionHandlerMiddleware>();   
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();  
@@ -44,6 +70,7 @@ namespace Route.Talabat.APIs
             }
             app.UseStaticFiles();
             app.UseHttpsRedirection();
+           // app.UseStatusCodePagesWithReExecute("/Errors/{0}");
             app.MapControllers();
             #endregion
 
