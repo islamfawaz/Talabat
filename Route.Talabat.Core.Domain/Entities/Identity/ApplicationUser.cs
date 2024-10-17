@@ -11,6 +11,6 @@ namespace Route.Talabat.Core.Domain.Entities.Identity
     {
         public required string DisplayName { get; set; }
 
-        public Address ? Address { get; set; }
+        public virtual Address ? Address { get; set; }
     }
 }

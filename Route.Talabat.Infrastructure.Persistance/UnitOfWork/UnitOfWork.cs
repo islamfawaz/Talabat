@@ -1,14 +1,8 @@
 ﻿using Route.Talabat.Core.Domain.Common;
 using Route.Talabat.Core.Domain.Contract.Persistence;
-using Route.Talabat.Core.Domain.Entities.Products;
 using Route.Talabat.Infrastructure.Persistance.Data;
 using Route.Talabat.Infrastructure.Persistance.Generic_Repositories;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Route.Talabat.Infrastructure.Persistance.UnitOfWork
 {
@@ -18,14 +12,14 @@ namespace Route.Talabat.Infrastructure.Persistance.UnitOfWork
 
         #region Services
 
-        private readonly StoreContext _dbContext;
+        private readonly StoreDbContext _dbContext;
         private readonly ConcurrentDictionary<string , object> _repositories;
 
         ///private readonly  Lazy<IGenericRepository<ProductCategory, int>> _categoryRepository;
         ///private readonly  Lazy<IGenericRepository<ProductBrand, int>> _brandsRepository;
         ///private readonly  Lazy<IGenericRepository<Product, int>> _productRepository;
 
-        public UnitOfWork(StoreContext dbContext)
+        public UnitOfWork(StoreDbContext dbContext)
         {
             _dbContext = dbContext;
             _repositories = new ConcurrentDictionary<string , object>();

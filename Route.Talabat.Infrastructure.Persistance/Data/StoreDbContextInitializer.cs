@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Infrastructure.Persistance.Data
 {
-    internal class StoreContextInitializer : IStoreContextInitializer
+    internal class StoreDbContextInitializer : IStoreContextInitializer
     {
-        private readonly StoreContext _dbcontext;
+        private readonly StoreDbContext _dbcontext;
 
-        public StoreContextInitializer(StoreContext dbcontext)
+        public StoreDbContextInitializer(StoreDbContext dbcontext)
         {
             _dbcontext = dbcontext;
         }

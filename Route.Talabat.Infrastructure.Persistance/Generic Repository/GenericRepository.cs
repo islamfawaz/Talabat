@@ -19,9 +19,9 @@ namespace Route.Talabat.Infrastructure.Persistance.Generic_Repositories
 
         #region Services
 
-        private readonly StoreContext _dbContext;
+        private readonly StoreDbContext _dbContext;
 
-        public GenericRepository(StoreContext dbContext)
+        public GenericRepository(StoreDbContext dbContext)
         {
             _dbContext = dbContext;
         }
