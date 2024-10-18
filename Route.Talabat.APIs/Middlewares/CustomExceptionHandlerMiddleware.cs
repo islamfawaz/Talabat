@@ -79,7 +79,17 @@ namespace Route.Talabat.APIs.Middlewares
 
                     break;
 
-                     default:
+                case UnAuthorizedException:
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    context.Response.ContentType = "application/json";
+                    response = new ApiExceptionResponse(401, ex.Message);
+                    await context.Response.WriteAsync(response.ToString());
+
+                    break;
+
+
+
+                default:
 
                     response = _environment.IsDevelopment() ?
                         new ApiExceptionResponse((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace?.ToString())

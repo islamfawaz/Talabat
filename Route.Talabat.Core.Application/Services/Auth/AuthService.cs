@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Core.Application.Services.Auth
 {
-    internal class AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IOptions<JwtSettings> jwtSettings) : IAuthService
+    public class AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IOptions<JwtSettings> jwtSettings) : IAuthService
     {
         
         private readonly JwtSettings _jwtSettings = jwtSettings.Value;
@@ -25,10 +25,10 @@ namespace Route.Talabat.Core.Application.Services.Auth
         {
             var user=await userManager.FindByEmailAsync(model.Email);
 
-            if (user is null) throw new BadRequestException("Invalid Login attempt");
+            if (user is null) throw new UnAuthorizedException("Invalid Login attempt");
 
             var result=await signInManager.CheckPasswordSignInAsync(user,model.Password,lockoutOnFailure:true);
-            if (!result.Succeeded) throw new BadRequestException("Invalid Login attempt");
+            if (!result.Succeeded) throw new UnAuthorizedException("Invalid Login attempt");
 
             var response = new UserDto()
             {
