@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.Application.Abstraction;
 using Route.Talabat.Application.Abstraction.Common;
 using Route.Talabat.Application.Abstraction.Products.Models;
 using Route.Talabat.Controllers.Controllers.Base;
-using Route.Talabat.Controllers.Errors;
 
 namespace Route.Talabat.Controllers.Controllers.Products
-{ 
+{
     public class ProductsController(IServiceManager serviceManager) : ApiControllerBase
     {
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]//Get/api/Products
         public async Task<ActionResult<Pagination<ProductReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams)
         {

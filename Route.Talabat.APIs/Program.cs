@@ -63,6 +63,8 @@ namespace Route.Talabat.APIs
             #endregion
 
             var app = builder.Build();
+           app.UseAuthentication();
+            app.UseAuthorization();
 
             #region  Database Initialize and Data Seeds
             await app.InitializeDbAsync();
