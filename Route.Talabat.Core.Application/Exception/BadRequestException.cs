@@ -8,11 +8,8 @@ namespace Route.Talabat.Core.Application.Exception
 {
     public class BadRequestException:ApplicationException
     {
-        public BadRequestException()
-        {
-            
-        }
-        public BadRequestException(string message) :base(message)
+     
+        public BadRequestException(string ? message) :base(message)
         {
             
         }

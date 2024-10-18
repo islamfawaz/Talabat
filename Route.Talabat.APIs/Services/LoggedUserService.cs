@@ -13,7 +13,7 @@ namespace Route.Talabat.APIs.Services
         public LoggedUserService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            UserId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            UserId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.PrimarySid) ?? string.Empty;
             // (Key,Claims) ===>String Encrypted(token)
             //Dycryption  Token ==>(Key,claims)
         }

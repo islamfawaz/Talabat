@@ -10,7 +10,7 @@ namespace Route.Talabat.Core.Application.Exception
     {
         public required IEnumerable<string> Errors { get; set; }
         public ValidationException(string ?message ="Bad Request")
-            :base(message!)
+            :base(message)
         {
             
         }
