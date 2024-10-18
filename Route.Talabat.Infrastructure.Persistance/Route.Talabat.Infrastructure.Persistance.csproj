@@ -24,6 +24,7 @@
     <Folder Include="Identity\Migrations\" />
     <Folder Include="Identity\Interceptors\" />
     <Folder Include="Identity\Seeds\" />
+    <Folder Include="Migrations\StoreIdentityDb\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Route.Talabat.Core.Domain.Contract.Persistence;
+using Route.Talabat.Core.Domain.Contract.Persistence.DbInitializer;
 using Route.Talabat.Core.Domain.Entities.Products;
+using Route.Talabat.Infrastructure.Persistance.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,22 +11,17 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Infrastructure.Persistance.Data
 {
-    internal class StoreDbContextInitializer : IStoreContextInitializer
+    internal sealed class StoreDbInitializer :DbInitializer, IStoreDbInitializer
     {
         private readonly StoreDbContext _dbcontext;
 
-        public StoreDbContextInitializer(StoreDbContext dbcontext)
+        public StoreDbInitializer(StoreDbContext dbcontext):base(dbcontext)
         {
             _dbcontext = dbcontext;
         }
-        public async Task InitializerAsync()
-        {
-            var pendingMigration = _dbcontext.Database.GetPendingMigrations();
-            if (pendingMigration.Any())
-                await _dbcontext.Database.MigrateAsync();
-        }
+     
 
-        public async Task SeedAsnc()
+        public override async Task SeedAsnc()
         {
             if (!_dbcontext.Brands.Any())
             {

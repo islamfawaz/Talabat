@@ -10,6 +10,10 @@ using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Infrastructure.Persistance;
 using Route.Talabat.Infrastructure.Persistance.UnitOfWork;
 using Route.Talabat.Infrastructure;
+using Route.Talabat.Core.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
+using Route.Talabat.Infrastructure.Persistance.Identity;
+using Route.Talabat.Core.Domain.Contract.Persistence.DbInitializer;
 
 namespace Route.Talabat.APIs
 {
@@ -53,12 +57,34 @@ namespace Route.Talabat.APIs
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddInfraStructureService(builder.Configuration);
 
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>((identityOptions) =>
+            {
+                identityOptions.SignIn.RequireConfirmedAccount = true;
+                identityOptions.SignIn.RequireConfirmedPhoneNumber = true;
+                identityOptions.SignIn.RequireConfirmedEmail = true;
+
+                identityOptions.Password.RequiredUniqueChars = 2;
+                identityOptions.Password.RequireNonAlphanumeric = true;
+                identityOptions.Password.RequiredLength= 6;
+                identityOptions.Password.RequireDigit= true;
+                identityOptions.Password.RequireLowercase= true;
+                identityOptions.Password.RequireUppercase = true;
+
+                identityOptions.User.RequireUniqueEmail = true;
+
+                identityOptions.Lockout.AllowedForNewUsers = true;
+                identityOptions.Lockout.MaxFailedAccessAttempts = 5;
+                identityOptions.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(12);
+
+            })
+                .AddEntityFrameworkStores<StoreIdentityDbContext>();
+
             #endregion
 
             var app = builder.Build();
 
             #region  Database Initialize and Data Seeds
-            await app.InitializeStoreContextAsync();
+            await app.InitializeDbAsync();
             #endregion
              
             #region Configure Kestrel Middlewares
