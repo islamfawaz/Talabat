@@ -10,7 +10,7 @@ using Route.Talabat.Infrastructure.Persistance.Data;
 
 namespace Route.Talabat.Infrastructure.Persistance.Migrations
 {
-    [DbContext(typeof(StoreContext))]
+    [DbContext(typeof(StoreDbContext))]
     partial class StoreContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

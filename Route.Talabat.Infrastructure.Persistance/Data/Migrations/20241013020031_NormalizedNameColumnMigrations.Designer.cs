@@ -11,7 +11,7 @@ using Route.Talabat.Infrastructure.Persistance.Data;
 
 namespace Route.Talabat.Infrastructure.Persistance.Migrations
 {
-    [DbContext(typeof(StoreContext))]
+    [DbContext(typeof(StoreDbContext))]
     [Migration("20241013020031_NormalizedNameColumnMigrations")]
     partial class NormalizedNameColumnMigrations
     {

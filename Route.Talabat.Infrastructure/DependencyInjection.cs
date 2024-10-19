@@ -18,7 +18,7 @@ namespace Route.Talabat.Infrastructure
             services.AddSingleton(typeof(IConnectionMultiplexer), (serviceProvider) =>
             {
                 var connectionString = configuration.GetConnectionString("Radis");
-                var connectionMultiplexerObj = ConnectionMultiplexer.Connect(connectionString!);
+              var connectionMultiplexerObj = ConnectionMultiplexer.Connect(connectionString!);
                 return connectionMultiplexerObj;
             } );
             services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));

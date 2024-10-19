@@ -1,5 +1,4 @@
-﻿using Azure;
-using Route.Talabat.Controllers.Errors;
+﻿using Route.Talabat.Controllers.Errors;
 using Route.Talabat.Core.Application.Exception;
 using System.Net;
 
@@ -11,87 +10,74 @@ namespace Route.Talabat.APIs.Middlewares
         private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
         private readonly IWebHostEnvironment _environment;
 
-        public CustomExceptionHandlerMiddleware(RequestDelegate next ,ILogger<CustomExceptionHandlerMiddleware> logger ,IWebHostEnvironment environment)
+        // Middleware constructor to inject required dependencies
+        public CustomExceptionHandlerMiddleware(RequestDelegate next, ILogger<CustomExceptionHandlerMiddleware> logger, IWebHostEnvironment environment)
         {
             _next = next;
             _logger = logger;
             _environment = environment;
         }
 
+        // Middleware invoke method
         public async Task Invoke(HttpContext context)
         {
             try
             {
-                //Logic Executed with Request
+                // Forward the request to the next middleware
                 await _next(context);
-                //Logic Executed with Response
 
                 if (context.Response.StatusCode == 404)
                 {
-                    var response = new ApiResponse(404, $"The request endPoint :{context.Request.Path} is not found");
+                    var response = new ApiResponse(404, $"The requested endpoint: {context.Request.Path} is not found");
                     await context.Response.WriteAsync(response.ToString());
-
                 }
             }
             catch (Exception ex)
             {
-
-                #region LogginTODO
-                if (_environment.IsDevelopment())
+                 if (_environment.IsDevelopment())
                 {
-                    _logger.LogError(ex, ex.Message);
-
+                    _logger.LogError(ex, ex.Message);   
                 }
-
                 else
                 {
+                    _logger.LogError("An unhandled exception occurred: {Message}", ex.Message);
                 }
 
-
-                #endregion
-
-                await HandleExceptionAsync(context, ex);
-
+                await HandleExceptionAsync(context, ex);   
             }
-
         }
 
         private async Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
             ApiResponse response;
+
             switch (ex)
             {
-
                 case NotfoundException:
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    context.Response.ContentType = "application/json";
                     response = new ApiExceptionResponse(404, ex.Message);
-                    await context.Response.WriteAsync(response.ToString());
-
                     break;
-
 
                 case BadRequestException:
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    context.Response.ContentType = "application/json";
                     response = new ApiExceptionResponse(400, ex.Message);
-                    await context.Response.WriteAsync(response.ToString());
-
                     break;
 
-                     default:
+                case UnAuthorizedException:
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    response = new ApiExceptionResponse(401, ex.Message);
+                    break;
 
-                    response = _environment.IsDevelopment() ?
-                        new ApiExceptionResponse((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace?.ToString())
-                        :
-                         new ApiExceptionResponse((int)HttpStatusCode.InternalServerError);
+                default:
+                    response = _environment.IsDevelopment()
+                        ? new ApiExceptionResponse((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace?.ToString())
+                        : new ApiExceptionResponse((int)HttpStatusCode.InternalServerError);
                     context.Response.StatusCode = 500;
-                    context.Response.ContentType = "application/json";
-
-                    await context.Response.WriteAsync(response.ToString());
-
                     break;
             }
+
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(response.ToString());
         }
     }
 }

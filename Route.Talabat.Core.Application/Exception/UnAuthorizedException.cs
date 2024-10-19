@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Core.Application.Exception
 {
-    public class BadRequestException:ApplicationException
+    public class UnAuthorizedException : ApplicationException
     {
-     
-        public BadRequestException(string ? message) :base(message)
+        public UnAuthorizedException(string message)
+            :base(message)
         {
             
         }
-
     }
 }

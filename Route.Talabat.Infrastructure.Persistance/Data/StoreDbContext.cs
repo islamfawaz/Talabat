@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Infrastructure.Persistance.Data
 {
-    public class StoreContext :DbContext
+    public class StoreDbContext :DbContext
     {
-        public StoreContext(DbContextOptions<StoreContext> dbContext): base(dbContext)
+        public StoreDbContext(DbContextOptions<StoreDbContext> dbContext): base(dbContext)
         {
             
         }
