@@ -1,3 +1,9 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Route.Talabat.Core.Domain.Entities.Identity;
+using Route.Talabat.Infrastructure.Persistance.Data;
+using Route.Talabat.Infrastructure.Persistance.Identity;
+
 namespace Route.Talabat.Dashboard
 {
     public class Program
@@ -6,8 +12,35 @@ namespace Route.Talabat.Dashboard
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            #region Configure Services
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            #region StoreDbContext
+            builder.Services.AddDbContext<StoreDbContext>((option =>
+            {
+                option.UseSqlServer(builder.Configuration.GetConnectionString("StoreContext"));
+            }));
+            #endregion
+
+            #region StoreIdentityContext
+            builder.Services.AddDbContext<StoreIdentityDbContext>((option =>
+            {
+                option
+                      .UseSqlServer(builder.Configuration.GetConnectionString("IdentityContext"));
+            }));
+            #endregion
+
+            #region Identity
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>((identityOptions) =>
+            {
+                identityOptions.User.RequireUniqueEmail=true;
+            })
+
+
+           .AddEntityFrameworkStores<StoreIdentityDbContext>();
+            #endregion
+            #endregion
 
             var app = builder.Build();
 
