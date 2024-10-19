@@ -10,7 +10,7 @@ namespace Route.Talabat.Controllers.Controllers.Products
 {
     public class ProductsController(IServiceManager serviceManager) : ApiControllerBase
     {
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         [HttpGet]//Get/api/Products
         public async Task<ActionResult<Pagination<ProductReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams)
         {
