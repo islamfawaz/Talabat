@@ -25,7 +25,7 @@ namespace Route.Talabat.Dashboard.Controllers
             var products =await _unitOfWork.GetRepository<Product, int>().GetAllAsyncWithSpec(spec);
             var mappedProducts = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductViewModel>>(products);
             return View(mappedProducts);
-        }
+        } 
 
          
     }
