@@ -53,7 +53,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Identity
             }
             else
             {
-                // Optionally, ensure the user is assigned the Admin role if they exist
+                // ensure the user is assigned the Admin role if they exist
                 if (!await _userManager.IsInRoleAsync(user, "Admin"))
                 {
                     await _userManager.AddToRoleAsync(user, "Admin");

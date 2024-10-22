@@ -23,7 +23,6 @@ namespace Route.Talabat.Infrastructure.Persistance
 
             services.AddScoped<IStoreDbInitializer, StoreDbInitializer>();
             services.AddScoped(typeof(ISaveChangesInterceptor), typeof(BaseAuditableInterceptor));
-
             #endregion
 
             #region StoreIdentityContext

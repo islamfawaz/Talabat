@@ -1,8 +1,12 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.Identity;
+using Route.Talabat.Dashboard.Helper;
 using Route.Talabat.Infrastructure.Persistance.Data;
 using Route.Talabat.Infrastructure.Persistance.Identity;
+using Route.Talabat.Infrastructure.Persistance.UnitOfWork;
 
 namespace Route.Talabat.Dashboard
 {
@@ -40,6 +44,9 @@ namespace Route.Talabat.Dashboard
 
            .AddEntityFrameworkStores<StoreIdentityDbContext>();
             #endregion
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
             #endregion
 
             var app = builder.Build();
@@ -53,9 +60,9 @@ namespace Route.Talabat.Dashboard
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+			app.UseStaticFiles();
 
-            app.UseRouting();
+			app.UseRouting();
 
             app.UseAuthorization();
 
