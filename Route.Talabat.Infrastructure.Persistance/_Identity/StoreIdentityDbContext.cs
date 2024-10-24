@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Route.Talabat.Core.Domain.Entities.Identity;
+using Route.Talabat.Infrastructure.Persistance.Common;
+using Route.Talabat.Infrastructure.Persistance.Data;
 using Route.Talabat.Infrastructure.Persistance.Identity.Configuration;
 using System;
 using System.Collections.Generic;
@@ -19,8 +21,12 @@ namespace Route.Talabat.Infrastructure.Persistance.Identity
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfiguration(new ApplicationUserConfigurations());
-            builder.ApplyConfiguration(new AddressConfigurations());
+            builder.ApplyConfigurationsFromAssembly(
+                typeof(AssemblyInformation).Assembly,
+                type => type.GetCustomAttributes(typeof(DbContextTypeAttribute), false)
+                            .OfType<DbContextTypeAttribute>()
+                            .Any(attr => attr.DbContextType == typeof(StoreIdentityDbContext))
+            );
         }
     }
 }
