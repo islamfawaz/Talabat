@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Identity\Migrations\" />
-    <Folder Include="Identity\Interceptors\" />
-    <Folder Include="Identity\Seeds\" />
+    <Folder Include="_Identity\Migrations\" />
+    <Folder Include="_Identity\Interceptors\" />
+    <Folder Include="_Identity\Seeds\" />
     <Folder Include="Migrations\StoreIdentityDb\" />
   </ItemGroup>
 

@@ -12,7 +12,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Identity.Configuration
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
-            builder.Property(U=>U.DisplayName)
+            builder.Property(U => U.DisplayName)
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnType("varchar");
@@ -20,7 +20,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Identity.Configuration
 
             builder.HasOne(U => U.Address)
                 .WithOne(U => U.User)
-                .HasForeignKey<Address>(A=>A.UserId)
+                .HasForeignKey<Address>(A => A.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
