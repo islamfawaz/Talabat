@@ -106,6 +106,7 @@ namespace Route.Talabat.Core.Application.Services.Auth
                 claims: privateClaims,
                 signingCredentials: new SigningCredentials(authKey, SecurityAlgorithms.HmacSha256));
 
+
             return new JwtSecurityTokenHandler().WriteToken(tokenObj);
         }
     }
