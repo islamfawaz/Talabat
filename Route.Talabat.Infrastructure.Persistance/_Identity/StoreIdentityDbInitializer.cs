@@ -18,15 +18,19 @@ namespace Route.Talabat.Infrastructure.Persistance.Identity
 
         public override async Task SeedAsnc()
         {
-            var user = new ApplicationUser()
+            if (!_userManager.Users.Any())
             {
-                DisplayName = "Islam Fawaz",
-                UserName = "islam.ahmed",
-                Email = "islam5@gmail.com",
-                PhoneNumber = "0112334455"
-            };
 
-            await _userManager.CreateAsync(user, "P@ssw0rd");
+                var user = new ApplicationUser()
+                {
+                    DisplayName = "Islam Fawaz",
+                    UserName = "islam.ahmed",
+                    Email = "islam5@gmail.com",
+                    PhoneNumber = "0112334455"
+                };
+
+                await _userManager.CreateAsync(user, "P@ssw0rd"); 
+            }
         }
     }
 }
