@@ -2,19 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.APIs.Extensions;
 using Route.Talabat.APIs.Middlewares;
 using Route.Talabat.APIs.Services;
-using Route.Talabat.Application.Abstraction;
 using Route.Talabat.Application.Abstraction.Abstraction;
 using Route.Talabat.Controllers.Errors;
 using Route.Talabat.Core.Application;
 using Route.Talabat.Core.Domain.Contract.Persistence;
+using Route.Talabat.Infrastructure;
 using Route.Talabat.Infrastructure.Persistance;
 using Route.Talabat.Infrastructure.Persistance.UnitOfWork;
-using Route.Talabat.Infrastructure;
-using Route.Talabat.Core.Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
-using Route.Talabat.Infrastructure.Persistance.Identity;
-using Route.Talabat.Core.Domain.Contract.Persistence.DbInitializer;
-using Route.Talabat.Application.Abstraction.Auth;
 
 namespace Route.Talabat.APIs
 {

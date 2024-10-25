@@ -24,7 +24,5 @@ namespace Route.Talabat.Core.Domain.Entities.Identity
         public virtual required ApplicationUser User { get; set; }
 
 
-
-
     }
 }
