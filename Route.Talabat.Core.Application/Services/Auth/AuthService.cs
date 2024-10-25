@@ -96,6 +96,7 @@ namespace Route.Talabat.Core.Application.Services.Auth
                 privateClaims.Add(new Claim(ClaimTypes.Role, role.ToString()));
             }
 
+
             // Create JWT token
             var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
             var tokenObj = new JwtSecurityToken(
