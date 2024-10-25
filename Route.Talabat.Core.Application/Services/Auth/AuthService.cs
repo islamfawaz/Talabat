@@ -20,20 +20,19 @@ namespace Route.Talabat.Core.Application.Services.Auth
             var normalizedEmail = model.Email.ToLower();
             var user = await userManager.FindByEmailAsync(normalizedEmail);
 
-            if (user is null)
-            {
-                Console.WriteLine($"User not found for email: {normalizedEmail}");
-                throw new UnAuthorizedException("Invalid Login attempt");
-            }
+            if (user is null) throw new UnAuthorizedException("Invalid Login attempt");
 
-            // Log user found, now checking password
-            Console.WriteLine($"User found for email: {normalizedEmail}. Checking password...");
 
+
+
+             
             var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: true);
-            if (!result.Succeeded)
-            {
-                throw new UnAuthorizedException("Invalid Login attempt");
-            }
+            if(result.IsNotAllowed) throw new UnAuthorizedException("Account not Confirmed Yet.");
+
+
+          if(result.IsLockedOut) throw new UnAuthorizedException("Account Is Locked.");
+
+            if (!result.Succeeded) throw new UnAuthorizedException("Invalid Login attempt");
 
             // Log successful login
 
