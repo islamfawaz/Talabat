@@ -9,7 +9,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Identity
     public sealed class StoreIdentityDbInitializer : DbInitializer, IStoreIdentityDbInitializer
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        
+
         public StoreIdentityDbInitializer(StoreIdentityDbContext dbContext, UserManager<ApplicationUser> userManager)
             : base(dbContext)
         {
