@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Route.Talabat.Application.Abstraction.Abstraction;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.Products;
 
@@ -7,10 +8,12 @@ namespace Route.Talabat.Dashboard.Controllers
     public class BrandController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILoggedUserService _loggedUserService;
 
-        public BrandController(IUnitOfWork unitOfWork)
+        public BrandController(IUnitOfWork unitOfWork ,ILoggedUserService loggedUserService)
         {
             _unitOfWork = unitOfWork;
+            _loggedUserService = loggedUserService;
         }
 
         // GET: Brand/Index
@@ -22,49 +25,52 @@ namespace Route.Talabat.Dashboard.Controllers
 
         // POST: Brand/Create
         [HttpPost]
-        public async Task<IActionResult> Create(ProductBrand productBrand)
+        public async Task<JsonResult> Create(string Name) 
         {
-            if (!ModelState.IsValid)
+            var productBrand = new ProductBrand
             {
-                ModelState.AddModelError("Name", "Please Enter a valid Name");
-                return View("Index", await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync());
+                Name = Name,
+                CreatedBy = _loggedUserService.UserId, 
+                LastModifiedBy = _loggedUserService.UserId 
+            };
+
+            if (string.IsNullOrEmpty(productBrand.Name) || productBrand.Name.Length > 100)
+            {
+                return Json(new { success = false, message = "Invalid data: Brand name is required and can't be longer than 100 characters." });
             }
 
             try
             {
+                // Add the new brand to the repository
                 await _unitOfWork.GetRepository<ProductBrand, int>().AddAsync(productBrand);
                 await _unitOfWork.CompleteAsync();
-                return RedirectToAction("Index");
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                // Log the exception (consider using a logging framework)
-                ModelState.AddModelError("", $"An error occurred while creating the brand: {ex.Message}");
-                return View("Index", await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync());
+                return Json(new { success = false, message = ex.Message });
             }
         }
 
         // POST: Brand/Delete/5
         [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<JsonResult> Delete(int id)
         {
-            // Find the brand by ID
             var productBrand = await _unitOfWork.GetRepository<ProductBrand, int>().GetAsync(id);
             if (productBrand == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Brand not found." });
             }
 
             try
             {
                 _unitOfWork.GetRepository<ProductBrand, int>().Delete(productBrand);
                 await _unitOfWork.CompleteAsync();
-                return RedirectToAction("Index");
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                 ModelState.AddModelError("", $"An error occurred while deleting the brand: {ex.Message}");
-                return View("Index", await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync());
+                return Json(new { success = false, message = ex.Message });
             }
         }
     }

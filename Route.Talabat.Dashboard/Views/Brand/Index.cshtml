@@ -7,9 +7,9 @@
 
 <h1>All Brands</h1>
 
-<form method="post" asp-action="Create">
+<form id="brandForm">
     <div class="input-group mb-2">
-        <input name="Name" class="form-control" placeholder="Enter Brand Name" required />
+        <input id="brandName" class="form-control" placeholder="Enter Brand Name" required />
         <div class="input-group-append">
             <button type="submit" class="btn btn-primary">Add New Brand</button>
         </div>
@@ -18,7 +18,7 @@
 
 @if (Model.Any())
 {
-    <table class="table table-striped table-hover">
+    <table class="table table-striped table-hover" id="brandsTable">
         <thead>
             <tr>
                 <th>Id</th>
@@ -29,16 +29,13 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                <tr id="brand-@item.Id">
                     <td>@item.Id</td>
                     <td>@item.Name</td>
                     <td>
-                        <form asp-action="Delete" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@item.Id" />
-                            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to delete this brand?');">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </form>
+                        <button class="btn btn-outline-danger" onclick="deleteBrand(@item.Id)">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </td>
                 </tr>
             }
@@ -52,3 +49,51 @@ else
     </div>
 }
 
+@section Scripts
+{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#brandForm').on('submit', function (e) {
+                e.preventDefault(); 
+                var brandName = $('#brandName').val();
+
+                $.ajax({
+                    url: '@Url.Action("Create", "Brand")',
+                    type: 'POST',
+                    data: { Name: brandName },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();  
+                        } else {
+                            alert(response.message); 
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error: ' + error);
+                    }
+                });
+            });
+        });
+
+        function deleteBrand(id) {
+            if (confirm('Are you sure you want to delete this brand?')) {
+                $.ajax({
+                    url: '@Url.Action("Delete", "Brand")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#brand-' + id).remove();  
+                        } else {
+                            alert(response.message); 
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error: ' + error);
+                    }
+                });
+            }
+        }
+    </script>
+}
