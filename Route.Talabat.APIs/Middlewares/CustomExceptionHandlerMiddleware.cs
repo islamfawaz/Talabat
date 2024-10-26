@@ -1,6 +1,8 @@
 ﻿using Route.Talabat.Controllers.Errors;
 using Route.Talabat.Core.Application.Exception;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
+using ValidationException = Route.Talabat.Core.Application.Exception.ValidationException;
 
 namespace Route.Talabat.APIs.Middlewares
 {
@@ -58,10 +60,26 @@ namespace Route.Talabat.APIs.Middlewares
                     response = new ApiExceptionResponse(404, ex.Message);
                     break;
 
+
+                case ValidationException validationException:
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.ContentType = "application/json";
+
+                    response = new ApiValidationResponse(ex.Message) { Errors=validationException.Errors};
+
+                    await context.Response.WriteAsync(response.ToString());
+                    break;
+
                 case BadRequestException:
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    response = new ApiExceptionResponse(400, ex.Message);
+                    context.Response.ContentType = "application/json";
+
+                    response = new ApiResponse(400,ex.Message);
+
+                    await context.Response.WriteAsync(response.ToString());
                     break;
+
+
 
                 case UnAuthorizedException:
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;

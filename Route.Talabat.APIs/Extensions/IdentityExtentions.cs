@@ -41,6 +41,7 @@ namespace Route.Talabat.APIs.Extensions
                 };
             });
 
+
             // Register the authentication service (AuthService) for dependency injection
             services.AddScoped(typeof(IAuthService), typeof(AuthService));
             services.Configure<JwtSettings>(configuration.GetSection("JWTSettings"));  // Configure JWT settings

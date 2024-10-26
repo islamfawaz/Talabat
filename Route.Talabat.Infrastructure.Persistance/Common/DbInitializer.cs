@@ -14,7 +14,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Common
     {
         private readonly DbContext _dbcontext;
 
-        public  DbInitializer(DbContext dbcontext)
+        public DbInitializer(DbContext dbcontext)
         {
             _dbcontext = dbcontext;
         }
@@ -25,7 +25,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Common
                 await _dbcontext.Database.MigrateAsync();
         }
 
-        public abstract  Task SeedAsnc();
-       
+        public abstract Task SeedAsnc();
+
     }
 }

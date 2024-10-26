@@ -1,4 +1,5 @@
 ﻿using Route.Talabat.Core.Domain.Entities.Products;
+using Route.Talabat.Infrastructure.Persistance.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,16 @@ namespace Route.Talabat.Infrastructure.Persistance.Data
             
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AssemblyInformation).Assembly);
-
+            builder.ApplyConfigurationsFromAssembly(
+                typeof(AssemblyInformation).Assembly,
+                type => type.GetCustomAttributes(typeof(DbContextTypeAttribute), false)
+                            .OfType<DbContextTypeAttribute>()
+                            .Any(attr => attr.DbContextType == typeof(StoreDbContext))
+            );
         }
+
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductBrand> Brands { get; set; }
 
