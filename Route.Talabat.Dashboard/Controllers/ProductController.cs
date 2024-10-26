@@ -9,7 +9,7 @@ using Route.Talabat.Core.Domain.Specifications.Products;
 using Route.Talabat.Dashboard.Helper;
 using Route.Talabat.Dashboard.Models;
 using Route.Talabat.Dashboard.Models.Route.Talabat.Dashboard.Models;
- 
+
 namespace Route.Talabat.Dashboard.Controllers
 {
     public class ProductController : Controller
