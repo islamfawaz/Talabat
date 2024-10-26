@@ -1,6 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Route.Talabat.APIs.Services;
+using Route.Talabat.Application.Abstraction.Abstraction;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.Identity;
 using Route.Talabat.Dashboard.Helper;
@@ -46,6 +48,7 @@ namespace Route.Talabat.Dashboard
             #endregion
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
+            builder.Services.AddScoped<ILoggedUserService, LoggedUserService>();
 
             #endregion
 

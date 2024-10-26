@@ -13,7 +13,7 @@ namespace Route.Talabat.Dashboard.Models
         [Required(ErrorMessage="Description Is Required")]
         public required string Description { get; set; }
 
-        public string PictureUrl { get; set; } = null!;
+        public string ? PictureUrl  { get; set; }
         [Required(ErrorMessage = "Price Is Required")]
 
         public decimal Price { get; set; }
