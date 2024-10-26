@@ -6,6 +6,7 @@ using Route.Talabat.Application.Abstraction.Products.Models;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.Products;
 using Route.Talabat.Core.Domain.Specifications.Products;
+using Route.Talabat.Dashboard.Helper;
 using Route.Talabat.Dashboard.Models;
 using Route.Talabat.Dashboard.Models.Route.Talabat.Dashboard.Models;
 
@@ -17,7 +18,7 @@ namespace Route.Talabat.Dashboard.Controllers
         private readonly IMapper _mapper;
         private readonly ILoggedUserService _loggedUserService;
 
-        public ProductController(IUnitOfWork unitOfWork ,IMapper mapper ,ILoggedUserService loggedUserService)
+        public ProductController(IUnitOfWork unitOfWork, IMapper mapper, ILoggedUserService loggedUserService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -66,7 +67,7 @@ namespace Route.Talabat.Dashboard.Controllers
                 var product = _mapper.Map<Product>(model);
 
                 // set the NormalizedName
-                product.NormalizedName = model.Name.ToUpperInvariant(); 
+                product.NormalizedName = model.Name.ToUpperInvariant();
 
                 // Set created and modified by properties
                 product.CreatedBy = _loggedUserService.UserId;
@@ -89,6 +90,7 @@ namespace Route.Talabat.Dashboard.Controllers
             return View(model);
         }
 
+        #region Helper
         private async Task<string> SaveImage(IFormFile imageFile)
         {
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
@@ -99,10 +101,77 @@ namespace Route.Talabat.Dashboard.Controllers
                 await imageFile.CopyToAsync(stream);
             }
 
-            return "/images/" + fileName; 
+            return "/images/" + fileName;
+        }
+        #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            ViewBag.Brands = new SelectList(await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync(), "Id", "Name");
+            ViewBag.Categories = new SelectList(await _unitOfWork.GetRepository<ProductCategory, int>().GetAllAsync(), "Id", "Name");
+
+            var product = await _unitOfWork.GetRepository<Product, int>().GetAsync(id);
+            var mappedProduct = _mapper.Map<Product, ProductViewModel>(product!);
+            mappedProduct.PictureUrl = product?.PictureUrl;
+
+            return View(mappedProduct);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, ProductViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
 
+            if (ModelState.IsValid)
+            {
+                if (model.Image is not null)
+                {
+                    // Delete old image if PictureUrl exists
+                    if (!string.IsNullOrEmpty(model.PictureUrl))
+                    {
+                        var fileName = Path.GetFileName(model.PictureUrl);
+                        if (!string.IsNullOrEmpty(fileName))
+                        {
+                            PictureSettings.DeleteFile("products", fileName);
+                        }
+                    }
+
+                    // Upload new image and set PictureUrl
+                    model.PictureUrl = PictureSettings.UploadFile(model.Image!, "products");
+                }
+                else if (string.IsNullOrEmpty(model.PictureUrl))
+                {
+                    ModelState.AddModelError("PictureUrl", "Image is required.");
+                    // Refresh dropdown lists for model errors
+                    ViewBag.Brands = new SelectList(await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync(), "Id", "Name");
+                    ViewBag.Categories = new SelectList(await _unitOfWork.GetRepository<ProductCategory, int>().GetAllAsync(), "Id", "Name");
+                    return View(model);
+                }
+
+                var mappedProduct = _mapper.Map<ProductViewModel, Product>(model);
+                mappedProduct.CreatedBy = _loggedUserService.UserId;
+                mappedProduct.LastModifiedBy = _loggedUserService.UserId;
+                mappedProduct.NormalizedName = model.Name.ToUpperInvariant();
+
+                _unitOfWork.GetRepository<Product, int>().Update(mappedProduct);
+
+                var result = await _unitOfWork.CompleteAsync();
+                if (result > 0)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
+            // Refill dropdown lists 
+            ViewBag.Brands = new SelectList(await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync(), "Id", "Name");
+            ViewBag.Categories = new SelectList(await _unitOfWork.GetRepository<ProductCategory, int>().GetAllAsync(), "Id", "Name");
+
+            return View(model);
+        }
 
     }
 }
