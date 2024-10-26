@@ -173,5 +173,53 @@ namespace Route.Talabat.Dashboard.Controllers
             return View(model);
         }
 
+
+
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var product = await _unitOfWork.GetRepository<Product, int>().GetAsync(id);
+            var mappedProduct=_mapper.Map<Product, ProductViewModel>(product!);
+
+            return View(mappedProduct);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id, ProductViewModel model)
+        {
+            try
+            {
+                if (id != model.Id)
+                {
+                    return NotFound();
+                }
+
+                var product = await _unitOfWork.GetRepository<Product, int>().GetAsync(id);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                 if (!string.IsNullOrEmpty(product.PictureUrl))
+                {
+                    var fileName = Path.GetFileName(product.PictureUrl);
+                    PictureSettings.DeleteFile("products", fileName);
+                }
+
+                 _unitOfWork.GetRepository<Product, int>().Delete(product);
+                await _unitOfWork.CompleteAsync();
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                
+                 ModelState.AddModelError("", "An error occurred while deleting the product.");
+                return View("Error");  
+            }
+        }
+
     }
 }
