@@ -17,26 +17,32 @@ namespace Route.Talabat.Infrastructure.Persistance.Data.Interceptors
             UpdateEntities(eventData.Context);
             return base.SavedChangesAsync(eventData, result, cancellationToken);
         }
-        private void UpdateEntities(DbContext ? dbcontext)
+        private void UpdateEntities(DbContext? dbcontext)
         {
             if (dbcontext is null) return;
 
-            var utcNow= DateTime.UtcNow;
+            var utcNow = DateTime.UtcNow;
             foreach (var entry in dbcontext.ChangeTracker.Entries<BaseAuditableEntity<int>>())
             {
-                if (entry is { State :EntityState.Added or EntityState.Modified})
+                if (entry is { State: EntityState.Added or EntityState.Modified })
                 {
-                    if (entry.State==EntityState.Added)
+                    if (entry.State == EntityState.Added)
                     {
-                        entry.Entity.CreatedBy = _loggedUserService.UserId;
+ 
+                         entry.Entity.CreatedBy = string.IsNullOrWhiteSpace(_loggedUserService.UserId)
+                            ? "System"  
+                            : _loggedUserService.UserId;
+
                         entry.Entity.CreatedOn = utcNow;
                     }
-                    entry.Entity.LastModifiedBy =_loggedUserService.UserId;
-                    entry.Entity.LastModifiedOn = utcNow;
 
+                     entry.Entity.LastModifiedBy = string.IsNullOrWhiteSpace(_loggedUserService.UserId)
+                        ? "System"  
+                        : _loggedUserService.UserId;
+                    entry.Entity.LastModifiedOn = utcNow;
                 }
             }
-
         }
+
     }
 }
