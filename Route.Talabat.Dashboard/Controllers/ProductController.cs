@@ -213,7 +213,7 @@ namespace Route.Talabat.Dashboard.Controllers
 
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 
                  ModelState.AddModelError("", "An error occurred while deleting the product.");
