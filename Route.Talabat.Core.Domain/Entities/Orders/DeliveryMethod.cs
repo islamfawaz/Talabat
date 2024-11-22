@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
 {
-    public class DeliveryMethod :BaseAuditableEntity<int>
+    public class DeliveryMethod :BaseEntity<int>
     {
         public DeliveryMethod()
         {
@@ -20,10 +20,10 @@ namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
             DeliveryTime = deliveryTime;
         }
 
-        public string ShortName { get; set; }
-        public string Description { get; set; }
-        public decimal Cost { get; set; }
-        public string DeliveryTime { get; set; }
+        public required string ShortName { get; set; }
+        public required string Description { get; set; }
+        public  decimal Cost { get; set; }
+        public required string DeliveryTime { get; set; }
 
 
 

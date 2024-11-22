@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
 {
-    public class Order
+    public class Order 
     {
         public Order()
         {
@@ -19,7 +19,7 @@ namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
             DeliveryMethod = deliveryMethod;
             Items = items;
             Subtotal = subtotal;
-            Total = total;
+            Total = total; 
         }
 
         public string BuyerEmail { get; set; }
@@ -28,18 +28,16 @@ namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
         public Address ShippingAddres { get; set; }
 
         //public int DeliveryMethodId { get; set; }
-        public DeliveryMethod DeliveryMethod { get; set; }
+        public virtual DeliveryMethod DeliveryMethod { get; set; }
 
-        public ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>();
+        public virtual ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>();
 
         public decimal Subtotal { get; set; }
 
         public decimal Total { get; set; }
 
-        public decimal GetTotal()
-        {
-            return Subtotal + DeliveryMethod.Cost;
-        }
+        public decimal GetTotal() =>   Subtotal + DeliveryMethod.Cost;
+      
         public string PaymentIntentId { get; set; } = "";
     }
 }
