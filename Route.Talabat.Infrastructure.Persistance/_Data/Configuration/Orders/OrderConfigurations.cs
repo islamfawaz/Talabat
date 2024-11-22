@@ -9,12 +9,23 @@ namespace Route.Talabat.Infrastructure.Persistance._Data.Configuration.Orders
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.OwnsOne(O => O.ShippingAddres, ShippingAddres => ShippingAddres.WithOwner()); // 1 : 1 [Total]
-            builder.Property(O => O.Status).
+            builder.Property(order => order.Status).
                 HasConversion(
-                 OStatus => OStatus.ToString()
-                //  OStatus => Enum.Parse(typeof(OrderStatus), OStatus.ToString())
+                 (OStatus) => OStatus.ToString()
+                , (OStatus) => (OrderStatus)Enum.Parse(typeof(OrderStatus), OStatus)
 
                 );
+            builder.Property(order => order.Subtotal).HasColumnType("decimal(2,8");
+            builder.HasOne(order => order.DeliveryMethod)
+                .WithMany()
+                .HasForeignKey(order=>order.DeliveryMethodId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(order=>order.Items ).WithOne().OnDelete(DeleteBehavior.Cascade);
+               
+
+
+
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
         public OrderStatus Status { get; set; }=OrderStatus.Pending;
         public Address ShippingAddres { get; set; }
 
-        //public int DeliveryMethodId { get; set; }
+        public int DeliveryMethodId { get; set; }
         public virtual DeliveryMethod DeliveryMethod { get; set; }
 
         public virtual ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>();
