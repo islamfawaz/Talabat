@@ -14,7 +14,7 @@ namespace Route.Talabat.Infrastructure.Persistance._Data.Configuration.Orders
         public override void Configure(EntityTypeBuilder<DeliveryMethod> builder)
         {
             base.Configure(builder);
-            builder.Property(D => D.Cost).HasColumnType("decimal(2,8");
+            builder.Property(D => D.Cost).HasColumnType("decimal(2,8)");
         }
 
     }

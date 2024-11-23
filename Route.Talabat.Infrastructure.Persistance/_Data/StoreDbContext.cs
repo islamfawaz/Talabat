@@ -1,4 +1,5 @@
-﻿using Route.Talabat.Core.Domain.Entities.Products;
+﻿using Route.Talabat.Core.Domain.Entities.OrderAggregate;
+using Route.Talabat.Core.Domain.Entities.Products;
 using Route.Talabat.Infrastructure.Persistance.Common;
 using System;
 using System.Collections.Generic;
@@ -16,20 +17,24 @@ namespace Route.Talabat.Infrastructure.Persistance.Data
             
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.ApplyConfigurationsFromAssembly(
-                typeof(AssemblyInformation).Assembly,
-                type => type.GetCustomAttributes(typeof(DbContextTypeAttribute), false)
-                            .OfType<DbContextTypeAttribute>()
-                            .Any(attr => attr.DbContextType == typeof(StoreDbContext))
-            );
-        }
+    
 
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductBrand> Brands { get; set; }
 
         public DbSet<ProductCategory> Categories { get; set; }
 
+        public DbSet<Order>  Orders { get; set; }
+
+        public DbSet<OrderItem> OrderItems { get; set; }
+
+        public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.ApplyConfigurationsFromAssembly(typeof(AssemblyInformation).Assembly,
+                type => type.GetCustomAttribute<DbContextTypeAttribute>()?.DbContextType == typeof(StoreDbContext)
+
+            );
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Core.Domain.Common
 {
-    public abstract class BaseEntity<TKey> where TKey : IEquatable<TKey>
+    public  class BaseEntity<TKey> where TKey : IEquatable<TKey>
     {
         public required TKey Id { get; set; }
 

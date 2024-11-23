@@ -9,15 +9,10 @@ namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
 {
      public enum OrderStatus
     {
-        [EnumMember(Value ="Pending")]
-        Pending,
 
-        [EnumMember(Value = "Payment Succeded")]
-        PaymentSucceded,
-
-        [EnumMember(Value = "Payment Failed")]
-        PaymentFailed,
-
+        Pending=1,
+        PaymentReceived=2,
+        PaymentFailed=3,
 
     }
 }

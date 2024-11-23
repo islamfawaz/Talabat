@@ -8,22 +8,17 @@ namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
 {
     public class OrderItem:BaseAuditableEntity<int>
     {
-        public OrderItem()
-        {
-            
-        }
 
-        public OrderItem(ProductItemOrder product, decimal price, int qountity)
-        {
-            Product = product;
-            Price = price;
-            Qountity = qountity;
-        }
+        //  public required ProductItemOrder Product { get; set; }
+        #region Product
+        public int ProductId { get; set; }
+        public required string ProductName { get; set; }
 
-        public ProductItemOrder Product { get; set; }
+        public required string PictureUrl { get; set; } 
+        #endregion
         public decimal Price { get; set; }
 
-        public int Qountity { get; set; }
+        public int Quantity { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,29 +7,30 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
 {
-    public class Order 
+    public class Order  :BaseAuditableEntity<int>
     {
-        public Order()
-        {
-            
-        }
-        public Order(string buyerEmail, Address shippingAddres, DeliveryMethod deliveryMethod, ICollection<OrderItem> items, decimal subtotal, decimal total)
-        {
-            BuyerEmail = buyerEmail;
-            ShippingAddres = shippingAddres;
-            DeliveryMethod = deliveryMethod;
-            Items = items;
-            Subtotal = subtotal;
-            Total = total; 
-        }
+        
 
-        public string BuyerEmail { get; set; }
-        public DateTimeOffset OrderDate { get; set; }
+        public required string BuyerEmail { get; set; }
+        public DateTime OrderDate { get; set; }= DateTime.UtcNow;
         public OrderStatus Status { get; set; }=OrderStatus.Pending;
-        public Address ShippingAddres { get; set; }
+        
+      //  public required Address ShippingAddress { get; set; }
 
-        public int DeliveryMethodId { get; set; }
-        public virtual DeliveryMethod DeliveryMethod { get; set; }
+        #region Address
+        public required string FirstName { get; set; }
+
+        public required string LastName { get; set; }
+
+        public required string Street { get; set; }
+
+        public required string City { get; set; }
+        public required string Country { get; set; }
+
+        #endregion
+
+        public int ? DeliveryMethodId { get; set; }
+        public virtual DeliveryMethod ? DeliveryMethod { get; set; }
 
         public virtual ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>();
 
@@ -36,7 +38,7 @@ namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
 
         public decimal Total { get; set; }
 
-        public decimal GetTotal() =>   Subtotal + DeliveryMethod.Cost;
+        public decimal GetTotal() =>   Subtotal + DeliveryMethod!.Cost;
       
         public string PaymentIntentId { get; set; } = "";
     }
