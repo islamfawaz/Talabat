@@ -15,7 +15,6 @@ namespace Route.Talabat.Infrastructure.Persistance.Data.Configuration.Base
     {
         public virtual void Configure(EntityTypeBuilder<TEntity> builder)
         {
-            //builder.Property(E => E.Id).UseIdentityColumn(1, 1);
 
             builder.Property(E => E.Id).ValueGeneratedOnAdd();
 

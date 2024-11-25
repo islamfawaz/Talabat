@@ -67,12 +67,13 @@ namespace Route.Talabat.Infrastructure.Persistance.Data
                 }
             }
 
-            if (!_dbcontext.Products.Any())
+            if (!_dbcontext.DeliveryMethods.Any())
             {
 
                 var deliveryMethodData = await File.ReadAllTextAsync("../Route.Talabat.Infrastructure.Persistance/_Data/Seeds/delivery.json");
 
                 var deliveryMethod = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodData);
+
 
                 if (deliveryMethod?.Count > 0)
                 {
