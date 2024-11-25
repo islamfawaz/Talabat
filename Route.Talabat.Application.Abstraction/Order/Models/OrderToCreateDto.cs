@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Application.Abstraction.Order.Models
 {
-    internal class OrderToCreateDto
+    public class OrderToCreateDto
     {
         public required string BasketId { get; set; }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Application.Abstraction.Order
 {
-     interface IOrderService
+    public interface IOrderService
     {
         Task<OrderToReturnDto> CreateOrderAsync(string buyerEmail, OrderToCreateDto order);
         Task<OrderToReturnDto> GetOrderByIdAsync(string buyerEmail,int id);
