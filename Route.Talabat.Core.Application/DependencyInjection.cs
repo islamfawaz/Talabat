@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Route.Talabat.Application.Abstraction;
 using Route.Talabat.Application.Abstraction.Basket;
+using Route.Talabat.Application.Abstraction.Order;
 using Route.Talabat.Core.Application.Mapping;
 using Route.Talabat.Core.Application.Services;
 using Route.Talabat.Core.Application.Services.Services;
@@ -22,6 +23,12 @@ namespace Route.Talabat.Core.Application
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 var basketRepository = serviceProvider.GetRequiredService<IBasketRepository>();
                 return () => new BasketService(basketRepository, mapper, configuration);
+            });
+
+            services.AddScoped(typeof(Func<IOrderService>), (serviceProvider) =>
+            {
+                return () => serviceProvider.GetRequiredService<IOrderService>();
+
             });
             return services;   
         }

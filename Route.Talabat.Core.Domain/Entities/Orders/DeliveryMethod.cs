@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Core.Domain.Entities.OrderAggregate
 {
-    public class DeliveryMethod :BaseEntity<int>
+    public class DeliveryMethod :BaseAuditableEntity<int>
     {
       
 
