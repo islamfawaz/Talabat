@@ -2,13 +2,20 @@
 #nullable disable
 namespace Route.Talabat.Core.Domain.Common
 {
+    public interface IBaseAuditableEntity
+    {
+        public   string CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }  
+        public string LastModifiedBy { get; set; }
+        public DateTime LastModifiedOn { get; set; } 
+    }
 
-    public abstract class  BaseAuditableEntity<TKey> :BaseEntity<TKey> 
+    public abstract class  BaseAuditableEntity<TKey> :BaseEntity<TKey> ,IBaseAuditableEntity
         where TKey : IEquatable<TKey>
     {
-        public  string CreatedBy { get; set; } 
-        public DateTime CreatedOn { get; set; }= DateTime.UtcNow;
-        public  string LastModifiedBy { get; set; } 
-        public DateTime LastModifiedOn { get; set; }=DateTime.UtcNow;
+        public   string CreatedBy { get; set; } 
+        public DateTime CreatedOn { get; set; } 
+        public   string LastModifiedBy { get; set; } 
+        public DateTime LastModifiedOn { get; set; } 
     } 
 }

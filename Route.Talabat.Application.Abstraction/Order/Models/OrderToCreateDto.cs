@@ -12,6 +12,7 @@ namespace Route.Talabat.Application.Abstraction.Order.Models
 
         public int DeliveryMethodId { get; set; }
 
+
         #region Address
         public required string FirstName { get; set; }
 

@@ -13,14 +13,16 @@ namespace Route.Talabat.Infrastructure.Persistance
         public static IServiceCollection AddPersistanceService(this IServiceCollection services, IConfiguration configuration)
         {
             #region StoreDbContext
-            services.AddDbContext<StoreDbContext>((option =>
+            services.AddDbContext<StoreDbContext>((serviceProvider , option) =>
             {
+               
                 option.UseLazyLoadingProxies()
-                      .UseSqlServer(configuration.GetConnectionString("StoreContext"));
-            }));
+                      .UseSqlServer(configuration.GetConnectionString("StoreContext")).AddInterceptors(serviceProvider.GetRequiredService<AuditInterceptor>());
+            });
 
             services.AddScoped<IStoreDbInitializer, StoreDbInitializer>();
-            services.AddScoped(typeof(ISaveChangesInterceptor), typeof(BaseAuditableInterceptor));
+
+           services.AddScoped(typeof(AuditInterceptor));
 
             #endregion
 

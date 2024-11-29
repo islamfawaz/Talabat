@@ -29,7 +29,7 @@ namespace Route.Talabat.Application.Abstraction.Order.Models
         public int? DeliveryMethodId { get; set; }
         public string? DeliveryMethod { get; set; }
 
-        public required ICollection<OrderToReturnDto> Items { get; set; }
+        public required ICollection<OrderItemDto> Items { get; set; }
 
         public decimal Subtotal { get; set; }
 
