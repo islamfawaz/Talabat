@@ -30,5 +30,28 @@ namespace Route.Talabat.Controllers.Controllers.Orders
 
             return Ok(result);
         }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<OrderToReturnDto>>> GetOrdersForUser()
+        {
+            var BuyerEmail=User.FindFirstValue(ClaimTypes.Email);
+            var result= await _serviceManager.OrderService.GetOrderForUserAsync(BuyerEmail!);
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+
+        public async Task<ActionResult<IEnumerable<OrderToReturnDto>>> GetOrdersById(int id)
+        {
+            var BuyerEmail = User.FindFirstValue(ClaimTypes.Email);
+            var result = await _serviceManager.OrderService.GetOrderByIdAsync(BuyerEmail!,id);
+            return Ok(result);
+        }
+
+        [HttpGet("deliveryMethod")]
+        public async Task<ActionResult<IEnumerable<DeliveryMethodDto>>> GetDeliveryMethod()
+        {
+            var result = await _serviceManager.OrderService.GetDeliveryMethodAsync();
+            return Ok(result);
+        }
     }
 }

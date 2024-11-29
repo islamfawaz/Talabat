@@ -21,7 +21,7 @@ public class MappingProfile : Profile
         CreateMap<Product, ProductReturnDto>()
             .ForMember(d => d.Brand, o => o.MapFrom(s => s.Brand!.Name))  // Map the Brand name to the Brand property
             .ForMember(d => d.Category, o => o.MapFrom(s => s.Category!.Name))  // Map the Category name to the Category property
-            .ForMember(d => d.PictureUrl, O => O.MapFrom<ProductPictureUrlResolver>()); // Use a custom resolver to get the Product picture URL
+            .ForMember(d => d.PictureUrl, o => o.MapFrom<ProductPictureUrlResolver>()); // Use a custom resolver to get the Product picture URL
 
         // Mapping between CustomerBasket and CustomerBasketDto (with reverse mapping)
         CreateMap<CustomerBasket, CustomerBasketDto>().ReverseMap();
@@ -29,24 +29,14 @@ public class MappingProfile : Profile
         // Mapping between BasketItem and BasketItemDto (with reverse mapping)
         CreateMap<BasketItem, BasketItemDto>().ReverseMap();
 
-        // Mapping between Order and OrderToReturnDto
         CreateMap<Order, OrderToReturnDto>()
-            .ForMember(dest => dest.DeliveryMethod, option => option.MapFrom(src => src.DeliveryMethod!.ShortName)) // Map DeliveryMethod to ShortName
-            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items ?? new List<OrderItem>())); // If Items is null, return an empty list
+        .ForMember(dest => dest.DeliveryMethod, opt => opt.MapFrom(src => src.DeliveryMethod!.ShortName)) // Map DeliveryMethod to ShortName
+        .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items ?? new List<OrderItem>()))  
+        .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.Subtotal + (src.DeliveryMethod != null ? src.DeliveryMethod.Cost : 0))); // Map Total
 
         // Mapping between OrderItem and OrderItemDto
         CreateMap<OrderItem, OrderItemDto>()
             .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<OrderItemPictureUrlResolver>()); // Use a custom resolver to get the OrderItem picture URL
-
-        // Mapping between Order and OrderToReturnDto (redundant mapping, similar to above)
-        CreateMap<Order, OrderToReturnDto>()
-            .ForMember(dest => dest.DeliveryMethod, opt => opt.MapFrom(src => src.DeliveryMethod!.ShortName)) // Map DeliveryMethod to ShortName
-            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items ?? new List<OrderItem>())); // Handle null Items
-
-        // Mapping between OrderItem to itself (OrderItem -> OrderItem)
-        CreateMap<OrderItem, OrderItem>()
-            .ForMember(dest => dest.ProductId, option => option.MapFrom(src => src.ProductId)) // Map ProductId to ProductId
-            .ForMember(dest => dest.ProductName, option => option.MapFrom(src => src.ProductName)); // Map ProductName to ProductName
 
         // Mapping between DeliveryMethod and DeliveryMethodDto
         CreateMap<DeliveryMethod, DeliveryMethodDto>();

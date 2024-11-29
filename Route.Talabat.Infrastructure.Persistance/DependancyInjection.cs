@@ -22,7 +22,7 @@ namespace Route.Talabat.Infrastructure.Persistance
 
             services.AddScoped<IStoreDbInitializer, StoreDbInitializer>();
 
-           services.AddScoped(typeof(AuditInterceptor));
+            services.AddScoped(typeof(AuditInterceptor));
 
             #endregion
 
