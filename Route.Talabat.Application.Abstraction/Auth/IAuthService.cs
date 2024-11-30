@@ -15,7 +15,9 @@ namespace Route.Talabat.Application.Abstraction.Auth
 
         Task<UserDto> GetCurrentUser(ClaimsPrincipal claimsPrincipal);
 
-        Task<AddressDto>GetUserAddress(ClaimsPrincipal claimsPrincipal);
+        Task<AddressDto ?>GetUserAddress(ClaimsPrincipal claimsPrincipal);
+
+        Task<AddressDto> UpdateUserAddress(ClaimsPrincipal principal ,AddressDto addressDto);
     }
 }
     

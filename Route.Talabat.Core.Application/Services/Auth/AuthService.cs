@@ -33,7 +33,7 @@ namespace Route.Talabat.Core.Application.Services.Auth
 
         }
 
-        public async Task<AddressDto> GetUserAddress(ClaimsPrincipal claimsPrincipal)
+        public async Task<AddressDto ?> GetUserAddress(ClaimsPrincipal claimsPrincipal)
         {
 
             var user = await userManager.FindUserWithAddress(claimsPrincipal);
@@ -106,6 +106,46 @@ namespace Route.Talabat.Core.Application.Services.Auth
 
             return response;
         }
+
+        public async Task<AddressDto> UpdateUserAddress(ClaimsPrincipal principal, AddressDto addressDto)
+        {
+            // Fetch the user along with their Address
+            var user = await userManager.FindUserWithAddress(principal);
+       
+            // Map the DTO to the Address entity
+            var updatedAddress = mapper.Map<Address>(addressDto);
+
+            // Update or create the user's address
+            if (user.Address is not null)
+            {
+                // Preserve the existing address ID
+                updatedAddress.Id = user.Address.Id;
+
+                // Update the current address fields
+                user.Address.FName = updatedAddress.FName;
+                user.Address.LName = updatedAddress.LName;
+                user.Address.Street = updatedAddress.Street;
+                user.Address.City = updatedAddress.City;
+                user.Address.Country = updatedAddress.Country;
+            }
+            else
+            {
+                // Assign the new address if none exists
+                user.Address = updatedAddress;
+            }
+
+            // Save changes to the user
+            var result = await userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                throw new BadRequestException(
+                    result.Errors.Select(error => error.Description)
+                                 .Aggregate((x, y) => $"{x}, {y}")
+                );
+
+            // Return the updated address as a DTO
+            return mapper.Map<AddressDto>(user.Address);
+        }
+
 
         private async Task<string> GenerateTokenAsync(ApplicationUser user)
         {

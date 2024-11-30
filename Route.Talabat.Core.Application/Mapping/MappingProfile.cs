@@ -42,6 +42,7 @@ public class MappingProfile : Profile
         // Mapping between DeliveryMethod and DeliveryMethodDto
         CreateMap<DeliveryMethod, DeliveryMethodDto>();
 
-        CreateMap<Address, AddressDto>();
+        CreateMap<Address, AddressDto>().ReverseMap();
+
     }
 }

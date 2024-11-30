@@ -47,6 +47,13 @@ namespace Route.Talabat.Controllers.Controllers.Account
             return Ok(result);
         }
 
+        [HttpPut("updateUserAddress")]
+        [Authorize]
+        public async Task<ActionResult<AddressDto>> UpdateUserAddress([FromBody] AddressDto addressDto)
+        {
+            var result = await _serviceManager.AuthService.UpdateUserAddress(User, addressDto);
+            return Ok(result);
+        }
 
 
     }
