@@ -17,6 +17,12 @@ namespace Route.Talabat.Core.Application.Services.Auth
     {
         private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
+        public async Task<bool> EmailExist(string email)
+        {
+
+            return await userManager.FindByEmailAsync(email!) is not null;
+        }
+
         public async Task<UserDto> GetCurrentUser(ClaimsPrincipal claimsPrincipal)
         {
             var email=claimsPrincipal.FindFirstValue(ClaimTypes.Email);
@@ -77,6 +83,11 @@ namespace Route.Talabat.Core.Application.Services.Auth
 
         public async Task<UserDto> RegisterAsync(RegisterDto model)
         {
+            //if (EmailExist(model.Email).Result)
+            //{
+            //    throw new BadRequestException("This Email Alread Exist");
+            //}
+
             // Normalize email and username to lowercase
             var normalizedEmail = model.Email.ToLower();
             var normalizedUserName = model.UserName.ToLower();

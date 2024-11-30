@@ -4,6 +4,7 @@ using Route.Talabat.Application.Abstraction;
 using Route.Talabat.Application.Abstraction.Auth;
 using Route.Talabat.Application.Abstraction.Order.Models;
 using Route.Talabat.Controllers.Controllers.Base;
+using System.Security.Claims;
 
 namespace Route.Talabat.Controllers.Controllers.Account
 {
@@ -53,6 +54,14 @@ namespace Route.Talabat.Controllers.Controllers.Account
         {
             var result = await _serviceManager.AuthService.UpdateUserAddress(User, addressDto);
             return Ok(result);
+        }
+        [HttpGet("emailExist")]
+        [Authorize]
+        public async Task<ActionResult<bool>> CheckEmailExist()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            return Ok(await _serviceManager.AuthService.EmailExist(email!));
+
         }
 
 
