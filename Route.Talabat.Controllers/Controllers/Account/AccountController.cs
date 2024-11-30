@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.Application.Abstraction;
 using Route.Talabat.Application.Abstraction.Auth;
+using Route.Talabat.Application.Abstraction.Order.Models;
 using Route.Talabat.Controllers.Controllers.Base;
 
 namespace Route.Talabat.Controllers.Controllers.Account
@@ -30,7 +32,20 @@ namespace Route.Talabat.Controllers.Controllers.Account
             return Ok(response);
         }
 
-
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<UserDto>>GetCurrentUser()
+        {
+            var result=await _serviceManager.AuthService.GetCurrentUser(User);
+            return Ok(result);
+        }
+        [HttpGet("getUserAddress")]
+        [Authorize]
+        public async Task<ActionResult<AddressDto>>GetUserAddress()
+        {
+            var result= await _serviceManager.AuthService.GetUserAddress(User);
+            return Ok(result);
+        }
 
 
 

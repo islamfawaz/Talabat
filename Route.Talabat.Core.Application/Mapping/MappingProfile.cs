@@ -4,6 +4,7 @@ using Route.Talabat.Application.Abstraction.Order.Models;
 using Route.Talabat.Application.Abstraction.Products.Models;
 using Route.Talabat.Core.Application.Mapping;
 using Route.Talabat.Core.Domain.Entities.Basket;
+using Route.Talabat.Core.Domain.Entities.Identity;
 using Route.Talabat.Core.Domain.Entities.OrderAggregate;
 using Route.Talabat.Core.Domain.Entities.Products;
 
@@ -40,5 +41,7 @@ public class MappingProfile : Profile
 
         // Mapping between DeliveryMethod and DeliveryMethodDto
         CreateMap<DeliveryMethod, DeliveryMethodDto>();
+
+        CreateMap<Address, AddressDto>();
     }
 }

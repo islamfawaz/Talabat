@@ -1,18 +1,46 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Route.Talabat.Application.Abstraction.Auth;
+using Route.Talabat.Application.Abstraction.Order.Models;
 using Route.Talabat.Core.Application.Exception;
 using Route.Talabat.Core.Domain.Entities.Identity;
+using Route.Talabat.Core.Domain.Extension;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace Route.Talabat.Core.Application.Services.Auth
 {
-    public class AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IOptions<JwtSettings> jwtSettings) : IAuthService
+    public class AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IOptions<JwtSettings> jwtSettings ,IMapper mapper) : IAuthService
     {
         private readonly JwtSettings _jwtSettings = jwtSettings.Value;
+
+        public async Task<UserDto> GetCurrentUser(ClaimsPrincipal claimsPrincipal)
+        {
+            var email=claimsPrincipal.FindFirstValue(ClaimTypes.Email);
+
+            var User = await userManager.FindByEmailAsync(email!);
+
+            return new UserDto
+            {
+                DisplayName = User!.DisplayName,
+                Id = User.Id,
+                Email = User.Email!,
+                Token = await GenerateTokenAsync(User)
+            };
+
+        }
+
+        public async Task<AddressDto> GetUserAddress(ClaimsPrincipal claimsPrincipal)
+        {
+
+            var user = await userManager.FindUserWithAddress(claimsPrincipal);
+
+            var address= mapper.Map<AddressDto>(user!.Address);
+            return address;
+        }
 
         public async Task<UserDto> LoginAsync(LoginDto model)
         {
