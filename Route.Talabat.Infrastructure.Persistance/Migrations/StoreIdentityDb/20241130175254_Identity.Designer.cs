@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Route.Talabat.Infrastructure.Persistance.Identity;
 
@@ -11,9 +12,11 @@ using Route.Talabat.Infrastructure.Persistance.Identity;
 namespace Route.Talabat.Infrastructure.Persistance.Migrations.StoreIdentityDb
 {
     [DbContext(typeof(StoreIdentityDbContext))]
-    partial class StoreIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241130175254_Identity")]
+    partial class Identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

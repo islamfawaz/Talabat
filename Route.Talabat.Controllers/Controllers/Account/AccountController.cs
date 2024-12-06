@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.Application.Abstraction;
 using Route.Talabat.Application.Abstraction.Auth;
+using Route.Talabat.Application.Abstraction.Order.Models;
 using Route.Talabat.Controllers.Controllers.Base;
+using System.Security.Claims;
 
 namespace Route.Talabat.Controllers.Controllers.Account
 {
@@ -30,7 +33,36 @@ namespace Route.Talabat.Controllers.Controllers.Account
             return Ok(response);
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<UserDto>>GetCurrentUser()
+        {
+            var result=await _serviceManager.AuthService.GetCurrentUser(User);
+            return Ok(result);
+        }
+        [HttpGet("getUserAddress")]
+        [Authorize]
+        public async Task<ActionResult<AddressDto>>GetUserAddress()
+        {
+            var result= await _serviceManager.AuthService.GetUserAddress(User);
+            return Ok(result);
+        }
 
+        [HttpPut("updateUserAddress")]
+        [Authorize]
+        public async Task<ActionResult<AddressDto>> UpdateUserAddress([FromBody] AddressDto addressDto)
+        {
+            var result = await _serviceManager.AuthService.UpdateUserAddress(User, addressDto);
+            return Ok(result);
+        }
+        [HttpGet("emailExist")]
+        [Authorize]
+        public async Task<ActionResult<bool>> CheckEmailExist()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            return Ok(await _serviceManager.AuthService.EmailExist(email!));
+
+        }
 
 
 

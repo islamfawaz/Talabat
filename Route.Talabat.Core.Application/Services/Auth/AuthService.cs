@@ -1,18 +1,52 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Route.Talabat.Application.Abstraction.Auth;
+using Route.Talabat.Application.Abstraction.Order.Models;
 using Route.Talabat.Core.Application.Exception;
 using Route.Talabat.Core.Domain.Entities.Identity;
+using Route.Talabat.Core.Domain.Extension;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace Route.Talabat.Core.Application.Services.Auth
 {
-    public class AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IOptions<JwtSettings> jwtSettings) : IAuthService
+    public class AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IOptions<JwtSettings> jwtSettings ,IMapper mapper) : IAuthService
     {
         private readonly JwtSettings _jwtSettings = jwtSettings.Value;
+
+        public async Task<bool> EmailExist(string email)
+        {
+
+            return await userManager.FindByEmailAsync(email!) is not null;
+        }
+
+        public async Task<UserDto> GetCurrentUser(ClaimsPrincipal claimsPrincipal)
+        {
+            var email=claimsPrincipal.FindFirstValue(ClaimTypes.Email);
+
+            var User = await userManager.FindByEmailAsync(email!);
+
+            return new UserDto
+            {
+                DisplayName = User!.DisplayName,
+                Id = User.Id,
+                Email = User.Email!,
+                Token = await GenerateTokenAsync(User)
+            };
+
+        }
+
+        public async Task<AddressDto ?> GetUserAddress(ClaimsPrincipal claimsPrincipal)
+        {
+
+            var user = await userManager.FindUserWithAddress(claimsPrincipal);
+
+            var address= mapper.Map<AddressDto>(user!.Address);
+            return address;
+        }
 
         public async Task<UserDto> LoginAsync(LoginDto model)
         {
@@ -49,6 +83,11 @@ namespace Route.Talabat.Core.Application.Services.Auth
 
         public async Task<UserDto> RegisterAsync(RegisterDto model)
         {
+            //if (EmailExist(model.Email).Result)
+            //{
+            //    throw new BadRequestException("This Email Alread Exist");
+            //}
+
             // Normalize email and username to lowercase
             var normalizedEmail = model.Email.ToLower();
             var normalizedUserName = model.UserName.ToLower();
@@ -78,6 +117,46 @@ namespace Route.Talabat.Core.Application.Services.Auth
 
             return response;
         }
+
+        public async Task<AddressDto> UpdateUserAddress(ClaimsPrincipal principal, AddressDto addressDto)
+        {
+            // Fetch the user along with their Address
+            var user = await userManager.FindUserWithAddress(principal);
+       
+            // Map the DTO to the Address entity
+            var updatedAddress = mapper.Map<Address>(addressDto);
+
+            // Update or create the user's address
+            if (user.Address is not null)
+            {
+                // Preserve the existing address ID
+                updatedAddress.Id = user.Address.Id;
+
+                // Update the current address fields
+                user.Address.FName = updatedAddress.FName;
+                user.Address.LName = updatedAddress.LName;
+                user.Address.Street = updatedAddress.Street;
+                user.Address.City = updatedAddress.City;
+                user.Address.Country = updatedAddress.Country;
+            }
+            else
+            {
+                // Assign the new address if none exists
+                user.Address = updatedAddress;
+            }
+
+            // Save changes to the user
+            var result = await userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                throw new BadRequestException(
+                    result.Errors.Select(error => error.Description)
+                                 .Aggregate((x, y) => $"{x}, {y}")
+                );
+
+            // Return the updated address as a DTO
+            return mapper.Map<AddressDto>(user.Address);
+        }
+
 
         private async Task<string> GenerateTokenAsync(ApplicationUser user)
         {

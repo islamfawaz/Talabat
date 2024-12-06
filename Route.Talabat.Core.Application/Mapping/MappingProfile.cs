@@ -1,33 +1,48 @@
 ﻿using AutoMapper;
 using Route.Talabat.Application.Abstraction.Basket.Models;
-using Route.Talabat.Application.Abstraction.Employee.Models;
+using Route.Talabat.Application.Abstraction.Order.Models;
 using Route.Talabat.Application.Abstraction.Products.Models;
+using Route.Talabat.Core.Application.Mapping;
 using Route.Talabat.Core.Domain.Entities.Basket;
-using Route.Talabat.Core.Domain.Entities.Employees;
+using Route.Talabat.Core.Domain.Entities.Identity;
+using Route.Talabat.Core.Domain.Entities.OrderAggregate;
 using Route.Talabat.Core.Domain.Entities.Products;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Route.Talabat.Core.Application.Mapping
+public class MappingProfile : Profile
 {
-    internal class MappingProfile :Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap<ProductBrand, BrandDto>();
-            CreateMap<ProductCategory, CategoryDto>();
-            CreateMap<Product, ProductReturnDto>()
-                .ForMember(d => d.Brand, o => o.MapFrom(s => s.Brand!.Name))
-                .ForMember(d => d.Category, o => o.MapFrom(s => s.Category!.Name))
-               // .ForMember(d=>d.PictureUrl,o=>o.MapFrom(s=> $"{s.PictureUrl}"));
-               .ForMember(d => d.PictureUrl, O => O.MapFrom<ProductPictureUrlResolver>());
-            CreateMap<Employee, EmployeeToReturnDto>();
+        // Mapping between ProductBrand and BrandDto
+        CreateMap<ProductBrand, BrandDto>();
 
-            CreateMap<CustomerBasket, CustomerBasketDto>().ReverseMap();
-            CreateMap<BasketItem,BasketItemDto>().ReverseMap();
-        }
+        // Mapping between ProductCategory and CategoryDto
+        CreateMap<ProductCategory, CategoryDto>();
+
+        // Mapping between Product and ProductReturnDto
+        CreateMap<Product, ProductReturnDto>()
+            .ForMember(d => d.Brand, o => o.MapFrom(s => s.Brand!.Name))  // Map the Brand name to the Brand property
+            .ForMember(d => d.Category, o => o.MapFrom(s => s.Category!.Name))  // Map the Category name to the Category property
+            .ForMember(d => d.PictureUrl, o => o.MapFrom<ProductPictureUrlResolver>()); // Use a custom resolver to get the Product picture URL
+
+        // Mapping between CustomerBasket and CustomerBasketDto (with reverse mapping)
+        CreateMap<CustomerBasket, CustomerBasketDto>().ReverseMap();
+
+        // Mapping between BasketItem and BasketItemDto (with reverse mapping)
+        CreateMap<BasketItem, BasketItemDto>().ReverseMap();
+
+        CreateMap<Order, OrderToReturnDto>()
+        .ForMember(dest => dest.DeliveryMethod, opt => opt.MapFrom(src => src.DeliveryMethod!.ShortName)) // Map DeliveryMethod to ShortName
+        .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items ?? new List<OrderItem>()))  
+        .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.Subtotal + (src.DeliveryMethod != null ? src.DeliveryMethod.Cost : 0))); // Map Total
+
+        // Mapping between OrderItem and OrderItemDto
+        CreateMap<OrderItem, OrderItemDto>()
+            .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<OrderItemPictureUrlResolver>()); // Use a custom resolver to get the OrderItem picture URL
+
+        // Mapping between DeliveryMethod and DeliveryMethodDto
+        CreateMap<DeliveryMethod, DeliveryMethodDto>();
+
+        CreateMap<Address, AddressDto>().ReverseMap();
+
     }
 }

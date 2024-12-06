@@ -1,25 +1,22 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
-using Route.Talabat.Application.Abstraction.Products.Models;
-using Route.Talabat.Core.Domain.Entities.Products;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Route.Talabat.Application.Abstraction.Order.Models;
+using Route.Talabat.Core.Domain.Entities.OrderAggregate;
 
-namespace Route.Talabat.Core.Application.Mapping
+internal class OrderItemPictureUrlResolver : IValueResolver<OrderItem, OrderItemDto, string>
 {
-    internal class ProductPictureUrlResolver(IConfiguration configuration) : IValueResolver<Product, ProductReturnDto, string?>
+    private readonly IConfiguration _configuration;
+
+    public OrderItemPictureUrlResolver(IConfiguration configuration)
     {
-        private readonly IConfiguration configuration = configuration;
+        _configuration = configuration;
+    }
 
-        public string? Resolve(Product source, ProductReturnDto destination, string? destMember, ResolutionContext context)
-        {
-            if (!string.IsNullOrEmpty(source.PictureUrl)) 
-                return $"{configuration["Urls:ApiBaseUrl"]}/{source.PictureUrl}";
+    public string Resolve(OrderItem source, OrderItemDto destination, string? destMember, ResolutionContext context)
+    {
+        if (!string.IsNullOrEmpty(source.PictureUrl))
+            return $"{_configuration["Urls:ApiBaseUrl"]}/{source.PictureUrl}";
 
-            return string.Empty;
-        }
+        return string.Empty;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Route.Talabat.Application.Abstraction.Auth;
 using Route.Talabat.Application.Abstraction.Basket;
+using Route.Talabat.Application.Abstraction.Order;
 using Route.Talabat.Application.Abstraction.Products;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,6 @@ namespace Route.Talabat.Application.Abstraction
         public IBasketService  BasketService { get; }
         public IAuthService AuthService { get; }
 
+        public IOrderService OrderService { get; }
     }
 }

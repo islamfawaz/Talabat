@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Route.Talabat.Core.Domain.Contract.Persistence.DbInitializer;
+using Route.Talabat.Core.Domain.Entities.OrderAggregate;
 using Route.Talabat.Core.Domain.Entities.Products;
 using Route.Talabat.Infrastructure.Persistance.Common;
 using System;
@@ -26,7 +27,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Data
             if (!_dbcontext.Brands.Any())
             {
 
-                var brandData = await File.ReadAllTextAsync("../Route.Talabat.Infrastructure.Persistance/Data/Seeds/brands.json");
+                var brandData = await File.ReadAllTextAsync("../Route.Talabat.Infrastructure.Persistance/_Data/Seeds/brands.json");
 
                 var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandData);
 
@@ -40,7 +41,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Data
             if (!_dbcontext.Categories.Any())
             {
 
-                var categoriesData = await File.ReadAllTextAsync("../Route.Talabat.Infrastructure.Persistance/Data/Seeds/categories.json");
+                var categoriesData = await File.ReadAllTextAsync("../Route.Talabat.Infrastructure.Persistance/_Data/Seeds/categories.json");
 
                 var categories = JsonSerializer.Deserialize<List<ProductCategory>>(categoriesData);
 
@@ -55,7 +56,7 @@ namespace Route.Talabat.Infrastructure.Persistance.Data
             if (!_dbcontext.Products.Any())
             {
 
-                var productsData = await File.ReadAllTextAsync("../Route.Talabat.Infrastructure.Persistance/Data/Seeds/products.json");
+                var productsData = await File.ReadAllTextAsync("../Route.Talabat.Infrastructure.Persistance/_Data/Seeds/products.json");
 
                 var products = JsonSerializer.Deserialize<List<Product>>(productsData);
 
@@ -65,6 +66,22 @@ namespace Route.Talabat.Infrastructure.Persistance.Data
                     await _dbcontext.SaveChangesAsync();
                 }
             }
+
+            if (!_dbcontext.DeliveryMethods.Any())
+            {
+
+                var deliveryMethodData = await File.ReadAllTextAsync("../Route.Talabat.Infrastructure.Persistance/_Data/Seeds/delivery.json");
+
+                var deliveryMethod = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodData);
+
+
+                if (deliveryMethod?.Count > 0)
+                {
+                    await _dbcontext.DeliveryMethods.AddRangeAsync(deliveryMethod);
+                    await _dbcontext.SaveChangesAsync();
+                }
+            }
+
         }
     }
 }
