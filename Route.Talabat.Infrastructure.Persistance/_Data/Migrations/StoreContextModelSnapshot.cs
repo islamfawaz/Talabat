@@ -293,6 +293,22 @@ namespace Route.Talabat.Infrastructure.Persistance.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Route.Talabat.Core.Domain.Entities.OrderAggregate.Order", b =>
+                {
+                    b.HasOne("Route.Talabat.Core.Domain.Entities.OrderAggregate.DeliveryMethod", "DeliveryMethod")
+                        .WithMany()
+                        .HasForeignKey("DeliveryMethodId");
+
+                    b.Navigation("DeliveryMethod");
+                });
+
+            modelBuilder.Entity("Route.Talabat.Core.Domain.Entities.OrderAggregate.OrderItem", b =>
+                {
+                    b.HasOne("Route.Talabat.Core.Domain.Entities.OrderAggregate.Order", null)
+                        .WithMany("Items")
+                        .HasForeignKey("OrderId");
+                });
+
             modelBuilder.Entity("Route.Talabat.Core.Domain.Entities.Products.Product", b =>
                 {
                     b.HasOne("Route.Talabat.Core.Domain.Entities.Products.ProductBrand", "Brand")
@@ -306,6 +322,11 @@ namespace Route.Talabat.Infrastructure.Persistance.Migrations
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Route.Talabat.Core.Domain.Entities.OrderAggregate.Order", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
