@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Route.Talabat.Core.Domain.Contract.Infrastructure;
 using Route.Talabat.Infrastructure.Basket_Repositories;
+using Route.Talabat.Shared.Models;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Route.Talabat.Infrastructure
                 return connectionMultiplexerObj;
             } );
             services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
-
+            services.Configure<RedisSettings>(configuration.GetSection("RedisSetting"));
             return services;
         }
     }
