@@ -90,6 +90,7 @@ namespace Route.Talabat.Core.Application.Services.Orders
             // 6. Create Order
             var orderToCreate = new Order
             {
+
                 BuyerEmail = buyerEmail,
                 FirstName = order.FirstName,
                 LastName = order.LastName,
