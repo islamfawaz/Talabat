@@ -8,5 +8,6 @@ namespace Route.Talabat.Core.Domain.Common
         public TKey Id { get; set; }
 
 
+
     }
 }
