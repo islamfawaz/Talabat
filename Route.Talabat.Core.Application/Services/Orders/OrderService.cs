@@ -4,6 +4,7 @@ using Route.Talabat.Application.Abstraction.Basket;
 using Route.Talabat.Application.Abstraction.Order;
 using Route.Talabat.Application.Abstraction.Order.Models;
 using Route.Talabat.Core.Application.Exception;
+using Route.Talabat.Core.Domain.Contract.Infrastructure;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.OrderAggregate;
 using Route.Talabat.Core.Domain.Entities.Products;
@@ -21,15 +22,17 @@ namespace Route.Talabat.Core.Application.Services.Orders
         private readonly IBasketService _basketService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IPaymentService paymentService;
 
-        public OrderService(IBasketService basketService ,IUnitOfWork unitOfWork ,IMapper mapper)
+        public OrderService(IBasketService basketService ,IUnitOfWork unitOfWork ,IMapper mapper ,IPaymentService paymentService)
         {
             _basketService = basketService;
             _unitOfWork = unitOfWork;
            _mapper = mapper;
+            this.paymentService = paymentService;
         }
 
-        public async Task<OrderToReturnDto> CreateOrderAsync(string buyerEmail, OrderToCreateDto order)
+        public async Task<OrderToReturnDto> CreateOrderAsync(string buyerEmail, OrderToCreateDto order )
         {
             // 1. Get Basket from Basket Repo
             var basket = await _basketService.GetCustomerBasketAsync(order.BasketId);
@@ -73,6 +76,17 @@ namespace Route.Talabat.Core.Application.Services.Orders
             // 5. Calculate Total
             var total = subTotal + deliveryMethod.Cost;
 
+            var orderRepo = _unitOfWork.GetRepository<Order, int>();
+
+            var spec = new OrderSpecifications(basket.PaymentIntentId!);
+
+            var existOrder = await orderRepo.GetAsyncWithSpec(spec);
+
+            if (existOrder is not null)
+            {
+                orderRepo.Delete(existOrder);
+               await paymentService.CreateOrUpdatePaymentIntent(basket.Id );
+            }
             // 6. Create Order
             var orderToCreate = new Order
             {
@@ -86,10 +100,13 @@ namespace Route.Talabat.Core.Application.Services.Orders
                 Subtotal = subTotal,
                 DeliveryMethodId = order.DeliveryMethodId,
                 Total = total,
+                PaymentIntentId=basket.PaymentIntentId!
             };
 
+           
+
             // 7. Add to database
-            await _unitOfWork.GetRepository<Order, int>().AddAsync(orderToCreate);
+            await orderRepo.AddAsync(orderToCreate);
 
             // 8. Save changes to the database
             var created = await _unitOfWork.CompleteAsync() > 0;

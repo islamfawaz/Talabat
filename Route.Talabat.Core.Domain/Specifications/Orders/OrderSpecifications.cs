@@ -7,25 +7,28 @@ using System.Threading.Tasks;
 
 namespace Route.Talabat.Core.Domain.Specifications.Orders
 {
-    public class OrderSpecifications :BaseSpecifications<Order,int> 
+    public class OrderSpecifications : BaseSpecifications<Order, int>
     {
-        public OrderSpecifications(string buyerEmail) :base(order=>order.BuyerEmail==buyerEmail)
+        // Constructor with optional parameters
+        public OrderSpecifications(string buyerEmail = null, int? orderId = null, string paymentIntentId = null)
+            : base(order =>
+                (buyerEmail == null || order.BuyerEmail == buyerEmail) &&
+                (orderId == null || order.Id == orderId) &&
+                (paymentIntentId == null || order.PaymentIntentId == paymentIntentId)
+            )
         {
-            AddInclude();
-            AddOrderByDesc(order=>order.OrderDate);
+            AddInclude(); // Include related entities like items and delivery method
+
+            // If buyerEmail is provided, order by descending order date
+            if (!string.IsNullOrEmpty(buyerEmail))
+                AddOrderByDesc(order => order.OrderDate);
         }
 
-        public OrderSpecifications(string buyerEmail ,int orderId) : base(order=>order.Id==orderId && order.BuyerEmail==buyerEmail) 
+        // Helper method to add includes for related entities
+        private protected void AddInclude()
         {
-            AddInclude();
-
-        }
-
-        private protected override void AddInclude()
-        {
-            base.AddInclude();
-            Includes.Add(order => order.Items);
-            Includes.Add(order => order.DeliveryMethod!);
+            Includes.Add(order => order.Items); // Include order items
+            Includes.Add(order => order.DeliveryMethod!); // Include delivery method, assuming non-nullable
         }
     }
 }
