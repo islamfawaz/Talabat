@@ -40,7 +40,7 @@ namespace Route.Talabat.Controllers.Controllers.Account
             var result=await _serviceManager.AuthService.GetCurrentUser(User);
             return Ok(result);
         }
-        [HttpGet("getUserAddress")]
+        [HttpGet("address")]
         [Authorize]
         public async Task<ActionResult<AddressDto>>GetUserAddress()
         {
@@ -48,7 +48,7 @@ namespace Route.Talabat.Controllers.Controllers.Account
             return Ok(result);
         }
 
-        [HttpPut("updateUserAddress")]
+        [HttpPut("address")]
         [Authorize]
         public async Task<ActionResult<AddressDto>> UpdateUserAddress([FromBody] AddressDto addressDto)
         {
@@ -61,7 +61,6 @@ namespace Route.Talabat.Controllers.Controllers.Account
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             return Ok(await _serviceManager.AuthService.EmailExist(email!));
-
         }
 
 

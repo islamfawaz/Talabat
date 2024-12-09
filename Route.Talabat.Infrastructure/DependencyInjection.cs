@@ -24,7 +24,7 @@ public static class DependencyInjection
 
         // Add other services
         services.AddScoped<IBasketRepository, BasketRepository>();
-        services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<IPaymentService, PaymentsService>();
 
         return services;
     }

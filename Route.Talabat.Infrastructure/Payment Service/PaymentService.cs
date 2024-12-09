@@ -12,7 +12,7 @@ using Product = Route.Talabat.Core.Domain.Entities.Products.Product;
 
 namespace Route.Talabat.Infrastructure.Payment_Service
 {
-    internal class PaymentService : IPaymentService
+    internal class PaymentsService : IPaymentService
     {
         private readonly IBasketRepository basketRepository;
         private readonly IUnitOfWork unitOfWork;
@@ -20,7 +20,7 @@ namespace Route.Talabat.Infrastructure.Payment_Service
         private readonly IMapper mapper;
         private readonly StripeSettings stripeSettings;
 
-        public PaymentService(
+        public PaymentsService(
             IBasketRepository basketRepository,
             IUnitOfWork unitOfWork,
             IOptions<RedisSettings> redisSettings,
@@ -84,8 +84,10 @@ namespace Route.Talabat.Infrastructure.Payment_Service
             PaymentIntent? paymentIntent = null;
             var paymentIntentService = new PaymentIntentService();
 
+            // Check if the PaymentIntentId exists and is valid
             if (string.IsNullOrEmpty(basket.PaymentIntentId))
             {
+                // Create new PaymentIntent if it doesn't exist
                 var options = new PaymentIntentCreateOptions
                 {
                     Amount = (long)(basket.Items.Sum(item => item.Price * item.Quantity) + basket.ShippingPrice),
@@ -99,12 +101,41 @@ namespace Route.Talabat.Infrastructure.Payment_Service
             }
             else
             {
-                var options = new PaymentIntentUpdateOptions
+                try
                 {
-                    Amount = (long)(basket.Items.Sum(item => item.Price * item.Quantity) + basket.ShippingPrice),
-                };
+                    // Check if the PaymentIntentId exists in Stripe
+                    paymentIntent = await paymentIntentService.GetAsync(basket.PaymentIntentId);
 
-                await paymentIntentService.UpdateAsync(basket.PaymentIntentId, options);
+                    // If PaymentIntent does not exist, create a new one
+                    if (paymentIntent == null)
+                    {
+                        var options = new PaymentIntentCreateOptions
+                        {
+                            Amount = (long)(basket.Items.Sum(item => item.Price * item.Quantity) + basket.ShippingPrice),
+                            Currency = "USD",
+                            PaymentMethodTypes = new List<string> { "card" }
+                        };
+
+                        paymentIntent = await paymentIntentService.CreateAsync(options);
+                        basket.PaymentIntentId = paymentIntent.Id;
+                        basket.ClientSecret = paymentIntent.ClientSecret;
+                    }
+                    else
+                    {
+                        // If PaymentIntent exists, update it
+                        var options = new PaymentIntentUpdateOptions
+                        {
+                            Amount = (long)(basket.Items.Sum(item => item.Price * item.Quantity) + basket.ShippingPrice),
+                        };
+
+                        await paymentIntentService.UpdateAsync(basket.PaymentIntentId, options);
+                    }
+                }
+                catch (StripeException)
+                {
+                    // Handle error if PaymentIntent ID is invalid or has expired
+                    throw new NotfoundException("PaymentIntent", basket.PaymentIntentId);
+                }
             }
 
             // Update basket in Redis

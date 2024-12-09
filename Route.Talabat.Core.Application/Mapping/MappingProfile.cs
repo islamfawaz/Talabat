@@ -43,6 +43,10 @@ public class MappingProfile : Profile
         CreateMap<DeliveryMethod, DeliveryMethodDto>();
 
         CreateMap<Address, AddressDto>().ReverseMap();
+        CreateMap<AddressDto, Address>()
+    .ForMember(dest => dest.FName, opt => opt.MapFrom(src => src.FirstName))
+    .ForMember(dest => dest.LName, opt => opt.MapFrom(src => src.LastName));
+
 
     }
 }

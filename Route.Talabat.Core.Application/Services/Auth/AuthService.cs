@@ -121,7 +121,7 @@ namespace Route.Talabat.Core.Application.Services.Auth
         public async Task<AddressDto> UpdateUserAddress(ClaimsPrincipal principal, AddressDto addressDto)
         {
             // Fetch the user along with their Address
-            var user = await userManager.FindUserWithAddress(principal);
+             var user = await userManager.FindUserWithAddress(principal);
        
             // Map the DTO to the Address entity
             var updatedAddress = mapper.Map<Address>(addressDto);

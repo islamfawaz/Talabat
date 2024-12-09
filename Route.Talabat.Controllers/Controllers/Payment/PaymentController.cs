@@ -9,11 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Route.Talabat.Controllers.Controllers.Payment
 {
-    public class PaymentController :ApiControllerBase
+    public class PaymentsController :ApiControllerBase
     {
         private readonly IPaymentService paymentService;
 
-        public PaymentController(IPaymentService paymentService)
+        public PaymentsController(IPaymentService paymentService)
         {
             this.paymentService = paymentService;
         }
