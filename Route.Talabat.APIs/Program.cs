@@ -9,6 +9,7 @@ using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Infrastructure;
 using Route.Talabat.Infrastructure.Persistance;
 using Route.Talabat.Infrastructure.Persistance.UnitOfWork;
+using System.Configuration;
 
 namespace Route.Talabat.APIs
 {
@@ -45,6 +46,13 @@ namespace Route.Talabat.APIs
             builder.Services.AddSwaggerGen();
             builder.Services.AddPersistanceService(builder.Configuration);
             builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddCors(policyOption =>
+            {
+                policyOption.AddPolicy("TalabatPolicy", policyBuilder =>
+                {
+                    policyBuilder.AllowAnyHeader().WithMethods().WithOrigins(builder.Configuration["Urls:FrontBaseUrl"]!);
+                });
+            });
             builder.Services.AddScoped<ILoggedUserService, LoggedUserService>();
             builder.Services.AddControllers().AddApplicationPart(typeof(Controllers.AssemblyInformation).Assembly);
             builder.Services.AddApplicationService();
@@ -53,6 +61,7 @@ namespace Route.Talabat.APIs
             builder.Services.AddInfraStructureService(builder.Configuration);
 
             builder.Services.AddIdentityService(builder.Configuration);
+           
 
             #endregion
 
@@ -72,6 +81,7 @@ namespace Route.Talabat.APIs
                 app.UseSwaggerUI();
             }
             app.UseStaticFiles();
+            app.UseCors("TalabatPolicy");
             app.UseHttpsRedirection();
            // app.UseStatusCodePagesWithReExecute("/Errors/{0}");
             app.MapControllers();

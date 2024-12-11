@@ -4,15 +4,11 @@ using Route.Talabat.Application.Abstraction.Basket;
 using Route.Talabat.Application.Abstraction.Order;
 using Route.Talabat.Application.Abstraction.Order.Models;
 using Route.Talabat.Core.Application.Exception;
+using Route.Talabat.Core.Domain.Contract.Infrastructure;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.OrderAggregate;
 using Route.Talabat.Core.Domain.Entities.Products;
 using Route.Talabat.Core.Domain.Specifications.Orders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Route.Talabat.Core.Application.Services.Orders
 {
@@ -21,12 +17,14 @@ namespace Route.Talabat.Core.Application.Services.Orders
         private readonly IBasketService _basketService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IPaymentService _paymentService;
 
-        public OrderService(IBasketService basketService ,IUnitOfWork unitOfWork ,IMapper mapper)
+        public OrderService(IBasketService basketService, IUnitOfWork unitOfWork, IMapper mapper, IPaymentService paymentService)
         {
             _basketService = basketService;
             _unitOfWork = unitOfWork;
-           _mapper = mapper;
+            _mapper = mapper;
+            _paymentService = paymentService;
         }
 
         public async Task<OrderToReturnDto> CreateOrderAsync(string buyerEmail, OrderToCreateDto order)
@@ -34,28 +32,31 @@ namespace Route.Talabat.Core.Application.Services.Orders
             // 1. Get Basket from Basket Repo
             var basket = await _basketService.GetCustomerBasketAsync(order.BasketId);
 
+            if (basket == null)
+                throw new BadRequestException("Basket not found.");
+
+            if (basket.Items == null || !basket.Items.Any())
+                throw new BadRequestException("No items in the basket.");
+
             // 2. Get selected items in the basket from the product repository
             var orderItems = new List<OrderItem>();
+            var productRepo = _unitOfWork.GetRepository<Product, int>();
 
-            if (basket.Items.Any())
+            foreach (var item in basket.Items)
             {
-                var productRepo = _unitOfWork.GetRepository<Product, int>();
-                foreach (var item in basket.Items)
+                var product = await productRepo.GetAsync(item.Id);
+                if (product == null)
+                    throw new BadRequestException($"Product with ID {item.Id} not found.");
+
+                var orderedItem = new OrderItem
                 {
-                    var product = await productRepo.GetAsync(item.Id);
-                    if (product != null)
-                    {
-                        var orderedItem = new OrderItem
-                        {
-                            ProductId = product.Id,
-                            ProductName = product.Name,
-                            PictureUrl = product.PictureUrl ?? "",
-                            Price = product.Price,
-                            Quantity = item.Quantity,
-                        };
-                        orderItems.Add(orderedItem);
-                    }
-                }
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    PictureUrl = product.PictureUrl ?? "",
+                    Price = product.Price,
+                    Quantity = item.Quantity,
+                };
+                orderItems.Add(orderedItem);
             }
 
             // 3. Calculate SubTotal
@@ -63,41 +64,60 @@ namespace Route.Talabat.Core.Application.Services.Orders
 
             // 4. Get the delivery method cost
             var deliveryMethodRepo = _unitOfWork.GetRepository<DeliveryMethod, int>();
+
+           
             var deliveryMethod = await deliveryMethodRepo.GetAsync(order.DeliveryMethodId);
 
             if (deliveryMethod == null)
-            {
                 throw new BadRequestException("Invalid delivery method selected.");
-            }
 
             // 5. Calculate Total
             var total = subTotal + deliveryMethod.Cost;
 
-            // 6. Create Order
+            // 6. Handle existing orders with the same PaymentIntentId
+            var orderRepo = _unitOfWork.GetRepository<Order, int>();
+            if (!string.IsNullOrEmpty(basket.PaymentIntentId))
+            {
+                var spec = new OrderWithPaymentIntentSpecifications(basket.PaymentIntentId);
+                var existOrder = await orderRepo.GetAsyncWithSpec(spec);
+
+                if (existOrder != null)
+                {
+                    orderRepo.Delete(existOrder);
+                    await _paymentService.CreateOrUpdatePaymentIntent(basket.Id);
+                }
+            }
+            else
+            {
+                throw new BadRequestException("PaymentIntentId is missing or invalid.");
+            }
+
+            // 7. Create Order
             var orderToCreate = new Order
             {
                 BuyerEmail = buyerEmail,
-                FirstName = order.FirstName,
-                LastName = order.LastName,
-                Street = order.Street,
-                City = order.City,
-                Country = order.Country,
+                FirstName = order.ShipToAddress.FirstName,
+                LastName = order.ShipToAddress.LastName,
+                Street = order.ShipToAddress.Street,
+                City = order.ShipToAddress.Street,
+                Country = order.ShipToAddress.Country,
                 Items = orderItems,
                 Subtotal = subTotal,
                 DeliveryMethodId = order.DeliveryMethodId,
                 Total = total,
+                PaymentIntentId = basket.PaymentIntentId
             };
 
-            // 7. Add to database
-            await _unitOfWork.GetRepository<Order, int>().AddAsync(orderToCreate);
+            // 8. Add to database
+            await orderRepo.AddAsync(orderToCreate);
 
-            // 8. Save changes to the database
+            // 9. Save changes to the database
             var created = await _unitOfWork.CompleteAsync() > 0;
-            if (!created)
-            {
-                throw new BadRequestException("An error occurred during order creation.");
-            }
 
+            if (!created)
+                throw new BadRequestException("An error occurred during order creation.");
+
+            // 10. Return the created order
             return _mapper.Map<OrderToReturnDto>(orderToCreate);
         }
 
@@ -115,9 +135,8 @@ namespace Route.Talabat.Core.Application.Services.Orders
 
             var order = await _unitOfWork.GetRepository<Order, int>().GetAsyncWithSpec(spec);
 
-            if (order is null)
-                throw new NotfoundException(nameof(Order),id);
-
+            if (order == null)
+                throw new NotfoundException(nameof(Order), id);
 
             return _mapper.Map<OrderToReturnDto>(order);
         }
@@ -128,7 +147,5 @@ namespace Route.Talabat.Core.Application.Services.Orders
 
             return _mapper.Map<IEnumerable<DeliveryMethodDto>>(deliveryMethods);
         }
-
-      
     }
 }

@@ -41,7 +41,8 @@ namespace Route.Talabat.Core.Application.Services.Services
                 throw new BadRequestException("Basket  can't be Null."); 
             }
 
-            var timeSpan = TimeSpan.FromDays(double.Parse(configuration.GetSection("RedisSetting")["TimeToLiveIn"]!));
+             var timeSpan = TimeSpan.FromDays(configuration.GetValue<int>("RedisSettings:TimeToLiveInDays"));
+
 
             var updatedBasket = await basketRepo.UpdateAsync(basket, timeSpan);
             if (updatedBasket is null)

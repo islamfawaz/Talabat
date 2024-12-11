@@ -9,27 +9,32 @@ using System.Threading.Tasks;
 namespace Route.Talabat.Controllers.Controllers.Orders
 {
     [Authorize]
-    public class OrderController : ApiControllerBase
+    public class OrdersController : ApiControllerBase
     {
         private readonly IServiceManager _serviceManager;
 
-        public OrderController(IServiceManager serviceManager)
+        public OrdersController(IServiceManager serviceManager)
         {
             _serviceManager = serviceManager;
         }
 
         [HttpPost]
-        public async Task<ActionResult<OrderToReturnDto>> CreateOrder(OrderToCreateDto orderDto)
+         public async Task<ActionResult<OrderToReturnDto>> CreateOrder([FromBody] OrderToCreateDto orderDto)
         {
-        
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var buyerEmail = User.FindFirstValue(ClaimTypes.Email);
 
-          
             var result = await _serviceManager.OrderService.CreateOrderAsync(buyerEmail!, orderDto);
+            Console.WriteLine($"Received order: {orderDto}");
+
 
             return Ok(result);
         }
+         
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderToReturnDto>>> GetOrdersForUser()
         {
@@ -47,7 +52,7 @@ namespace Route.Talabat.Controllers.Controllers.Orders
             return Ok(result);
         }
 
-        [HttpGet("deliveryMethod")]
+        [HttpGet("deliveryMethods")]
         public async Task<ActionResult<IEnumerable<DeliveryMethodDto>>> GetDeliveryMethod()
         {
             var result = await _serviceManager.OrderService.GetDeliveryMethodAsync();
