@@ -7,6 +7,6 @@ namespace Route.Talabat.Core.Domain.Contract.Infrastructure
     {
         public  Task<CustomerBasketDto> CreateOrUpdatePaymentIntent(string BasketId);
 
-         
+        public Task<bool> UpdateOrderPaymentStatus(string requestBody, string signatureHeader);
     }
 }

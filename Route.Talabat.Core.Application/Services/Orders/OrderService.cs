@@ -78,7 +78,7 @@ namespace Route.Talabat.Core.Application.Services.Orders
             var orderRepo = _unitOfWork.GetRepository<Order, int>();
             if (!string.IsNullOrEmpty(basket.PaymentIntentId))
             {
-                var spec = new OrderSpecifications(basket.PaymentIntentId);
+                var spec = new OrderWithPaymentIntentSpecifications(basket.PaymentIntentId);
                 var existOrder = await orderRepo.GetAsyncWithSpec(spec);
 
                 if (existOrder != null)
