@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Route.Talabat.Application.Abstraction.Basket.Models;
+using Route.Talabat.Application.Abstraction.Food.Models;
 using Route.Talabat.Application.Abstraction.Order.Models;
 using Route.Talabat.Application.Abstraction.Products.Models;
 using Route.Talabat.Core.Application.Mapping;
 using Route.Talabat.Core.Domain.Entities.Basket;
+using Route.Talabat.Core.Domain.Entities.Food;
 using Route.Talabat.Core.Domain.Entities.Identity;
 using Route.Talabat.Core.Domain.Entities.OrderAggregate;
 using Route.Talabat.Core.Domain.Entities.Products;
@@ -47,6 +49,10 @@ public class MappingProfile : Profile
     .ForMember(dest => dest.FName, opt => opt.MapFrom(src => src.FirstName))
     .ForMember(dest => dest.LName, opt => opt.MapFrom(src => src.LastName));
 
-
+        CreateMap<FoodRatingDto, FoodRating>().ReverseMap(); 
+        CreateMap<FavoriteDto, Favorite>().ReverseMap();
+        CreateMap<FavoriteDto, Favorite>()
+          .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+          .ForMember(dest => dest.FoodId, opt => opt.MapFrom(src => src.FoodId));
     }
 }

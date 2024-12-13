@@ -3,8 +3,11 @@ using Route.Talabat.APIs.Extensions;
 using Route.Talabat.APIs.Middlewares;
 using Route.Talabat.APIs.Services;
 using Route.Talabat.Application.Abstraction.Abstraction;
+using Route.Talabat.Application.Abstraction.Food;
+using Route.Talabat.Controllers.Controllers.Food;
 using Route.Talabat.Controllers.Errors;
 using Route.Talabat.Core.Application;
+using Route.Talabat.Core.Application.Services.Food;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Infrastructure;
 using Route.Talabat.Infrastructure.Persistance;
@@ -59,7 +62,8 @@ namespace Route.Talabat.APIs
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddInfraStructureService(builder.Configuration);
-
+            builder.Services.AddSingleton<IWebHostEnvironment>(builder.Environment);
+            builder.Services.AddScoped<IFoodUserService, FoodUserService>();
             builder.Services.AddIdentityService(builder.Configuration);
            
 
