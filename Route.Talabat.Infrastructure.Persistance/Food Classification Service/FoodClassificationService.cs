@@ -104,11 +104,10 @@ namespace Infrastructure.Persistence.Services
             // الحصول على الأطعمة الموصى بها من قاعدة البيانات باستخدام المواصفة
             var recommendedFoods = _unitOfWork.GetRepository<ClassifiedFood, int>()
                 .GetAllAsyncWithSpec(specification)
-                .Result;  // احصل على البيانات المتوافقة مع المواصفة
-
+                .Result;   
             return recommendedFoods.Select(r => new FoodItem
             {
-                ItemId = r.ItemId,  // تغيير من ItemId إلى FoodId
+                ItemId = r.ItemId,   
                 NameFood = r.NameFood,
                 Rating = r.Rating,
                 Ingredients = r.Ingredients,

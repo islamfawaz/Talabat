@@ -19,6 +19,8 @@ namespace Route.Talabat.Core.Domain.Contract.Persistence
         Task<int> GetCountAsync(ISpecifications<TEntity, TKey> spec);
 
         Task AddAsync(TEntity entity);
+        Task AddRangeAsync(IEnumerable<TEntity> entities);
+
         void Update(TEntity entity);
         void Delete(TEntity entity);
 

@@ -1,18 +1,14 @@
+using Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.APIs.Extensions;
 using Route.Talabat.APIs.Middlewares;
 using Route.Talabat.APIs.Services;
 using Route.Talabat.Application.Abstraction.Abstraction;
-using Route.Talabat.Application.Abstraction.Food;
-using Route.Talabat.Controllers.Controllers.Food;
 using Route.Talabat.Controllers.Errors;
 using Route.Talabat.Core.Application;
-using Route.Talabat.Core.Application.Services.Food;
 using Route.Talabat.Core.Domain.Contract.Persistence;
-using Route.Talabat.Infrastructure;
 using Route.Talabat.Infrastructure.Persistance;
 using Route.Talabat.Infrastructure.Persistance.UnitOfWork;
-using System.Configuration;
 
 namespace Route.Talabat.APIs
 {
@@ -49,13 +45,18 @@ namespace Route.Talabat.APIs
             builder.Services.AddSwaggerGen();
             builder.Services.AddPersistanceService(builder.Configuration);
             builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+       
             builder.Services.AddCors(policyOption =>
             {
                 policyOption.AddPolicy("TalabatPolicy", policyBuilder =>
                 {
-                    policyBuilder.AllowAnyHeader().WithMethods().WithOrigins(builder.Configuration["Urls:FrontBaseUrl"]!);
+                    policyBuilder
+                        .AllowAnyHeader()
+                        .AllowAnyMethod() // Allow all HTTP methods
+                        .WithOrigins(builder.Configuration["Urls:FrontBaseUrl"]!); // Allow specific frontend URL
                 });
             });
+
             builder.Services.AddScoped<ILoggedUserService, LoggedUserService>();
             builder.Services.AddControllers().AddApplicationPart(typeof(Controllers.AssemblyInformation).Assembly);
             builder.Services.AddApplicationService();
@@ -63,9 +64,8 @@ namespace Route.Talabat.APIs
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddInfraStructureService(builder.Configuration);
             builder.Services.AddSingleton<IWebHostEnvironment>(builder.Environment);
-            builder.Services.AddScoped<IFoodUserService, FoodUserService>();
+            builder.Services.AddScoped<CsvDataLoader>();
             builder.Services.AddIdentityService(builder.Configuration);
-           
 
             #endregion
 

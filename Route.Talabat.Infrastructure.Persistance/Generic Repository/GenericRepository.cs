@@ -1,4 +1,5 @@
-﻿using Route.Talabat.Core.Domain.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using Route.Talabat.Core.Domain.Common;
 using Route.Talabat.Core.Domain.Contract;
 using Route.Talabat.Core.Domain.Contract.Persistence;
 using Route.Talabat.Core.Domain.Entities.Products;
@@ -84,7 +85,11 @@ namespace Route.Talabat.Infrastructure.Persistance.Generic_Repositories
             return withTracking ? query : query.AsNoTracking();
         }
 
-      
+        public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _dbContext.AddRangeAsync(entities);
+        }
+
 
         #endregion
 

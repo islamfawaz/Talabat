@@ -1,7 +1,9 @@
-﻿using Route.Talabat.Core.Domain.Contract.Persistence.Food;
-using Microsoft.AspNetCore.Mvc;
-using Route.Talabat.Controllers.Controllers.Base;
+﻿using Microsoft.AspNetCore.Mvc;
+using Route.Talabat.Core.Domain.Contract.Persistence.Food;
 using Route.Talabat.Core.Domain.Entities.Food;
+using Route.Talabat.Controllers.Controllers.Base;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Route.Talabat.Controllers.Controllers.Food
 {
@@ -14,18 +16,25 @@ namespace Route.Talabat.Controllers.Controllers.Food
             _classificationService = classificationService;
         }
 
+        // Endpoint to classify food data
         [HttpPost("classify")]
         public IActionResult ClassifyData()
         {
-            // تحديد اسم الملف
-            string fileName = "Dataset_for_print.csv"; // اسم الملف داخل wwwroot
-            _classificationService.TrainAndClassify(fileName); // تمرير اسم الملف هنا فقط
-            return Ok("Classification Completed");
+            try
+            {
+                string fileName = "Dataset_for_print.csv"; // File name in wwwroot
+                _classificationService.TrainAndClassify(fileName); // Pass the file name here only
+                return Ok("Classification completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = "Error during classification.", Error = ex.Message });
+            }
         }
 
-
+        // Endpoint to get food recommendations based on user ID and count
         [HttpGet("recommend/{userId}")]
-        public IActionResult GetRecommendations(int userId, [FromQuery] int count = 1)
+        public IActionResult GetRecommendationsForUser(int userId, [FromQuery] int count = 1)
         {
             try
             {
@@ -56,20 +65,35 @@ namespace Route.Talabat.Controllers.Controllers.Food
             }
         }
 
-
-
+        // Endpoint to import classified food data
         [HttpPost("import-classified-foods")]
         public async Task<IActionResult> ImportClassifiedFoods()
         {
-            string fileName = "Dataset_for_print.csv";
-            await _classificationService.ImportClassifiedFoodsAsync(fileName);
-            return Ok("Classified foods imported successfully.");
+            try
+            {
+                string fileName = "Dataset_for_print.csv";
+                await _classificationService.ImportClassifiedFoodsAsync(fileName);
+                return Ok("Classified foods imported successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = "Error during import.", Error = ex.Message });
+            }
         }
 
-
-      
-
-
-
+        // Endpoint to get recommendations with async method
+        [HttpGet("recommendations/{userId}")]
+         public   ActionResult<List<FoodItem>> Recommendations(int userId, [FromQuery] int numberOfRecommendations)
+        {
+            try
+            {
+                var recommendations =  _classificationService.RecommendFoods(userId, numberOfRecommendations);
+                return Ok(recommendations);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error occurred: {ex.Message}");
+            }
+        }
     }
 }

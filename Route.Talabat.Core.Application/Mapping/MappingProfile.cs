@@ -49,10 +49,10 @@ public class MappingProfile : Profile
     .ForMember(dest => dest.FName, opt => opt.MapFrom(src => src.FirstName))
     .ForMember(dest => dest.LName, opt => opt.MapFrom(src => src.LastName));
 
-        CreateMap<FoodRatingDto, FoodRating>().ReverseMap(); 
-        CreateMap<FavoriteDto, Favorite>().ReverseMap();
-        CreateMap<FavoriteDto, Favorite>()
-          .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
-          .ForMember(dest => dest.FoodId, opt => opt.MapFrom(src => src.FoodId));
+        CreateMap<FoodRatingDto, FoodRating>().ReverseMap();
+        // تعديل الـ AutoMapper لإنشاء التحويل بين FavoriteDto و Favorite بشكل صحيح
+        CreateMap<FoodItem, FoodItemDto>().ReverseMap();
+
+
     }
 }

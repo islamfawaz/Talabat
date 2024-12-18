@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Route.Talabat.Core.Domain.Entities.Food;
 
-namespace Route.Talabat.Core.Domain.Entities.Food
+public class Favorite : BaseAuditableEntity<int>
 {
-    public class Favorite :BaseAuditableEntity<int>
-    {
-        public string UserId { get; set; }
-         public int FoodId { get; set; }
-        public virtual FoodItem Food { get; set; }
-
-
-    }
+    public int UserId { get; set; }  // تعديل UserId ليكون من نوع int
+    public int FoodId { get; set; }
+    public virtual FoodItem Food { get; set; }
 }

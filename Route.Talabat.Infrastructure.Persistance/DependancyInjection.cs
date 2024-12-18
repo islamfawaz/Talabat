@@ -7,7 +7,7 @@ using Route.Talabat.Core.Domain.Contract.Persistence.Food;
 using Route.Talabat.Infrastructure.Persistance.Data;
 using Route.Talabat.Infrastructure.Persistance.Data.Interceptors;
 using Route.Talabat.Infrastructure.Persistance.Identity;
-
+ 
 namespace Route.Talabat.Infrastructure.Persistance
 {
     public static class DependancyInjection

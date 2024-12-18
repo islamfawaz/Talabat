@@ -33,11 +33,8 @@ namespace Route.Talabat.Infrastructure.Persistance.Data
 
         public DbSet<FoodRating>  FoodRatings { get; set; }
 
-        public DbSet<Favorite> Favorites { get; set; }
-
         public DbSet<ClassifiedFood> ClassifiedFoods { get; set; }
-         public DbSet<FoodItem> FoodItems { get; set; }
-
+ 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
