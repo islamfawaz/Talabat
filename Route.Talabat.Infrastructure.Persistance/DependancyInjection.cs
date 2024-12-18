@@ -1,11 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+﻿using Infrastructure.Persistence.Services;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Route.Talabat.Core.Domain.Contract.Persistence.DbInitializer;
+using Route.Talabat.Core.Domain.Contract.Persistence.Food;
 using Route.Talabat.Infrastructure.Persistance.Data;
 using Route.Talabat.Infrastructure.Persistance.Data.Interceptors;
 using Route.Talabat.Infrastructure.Persistance.Identity;
-
+ 
 namespace Route.Talabat.Infrastructure.Persistance
 {
     public static class DependancyInjection
@@ -23,6 +25,8 @@ namespace Route.Talabat.Infrastructure.Persistance
             services.AddScoped<IStoreDbInitializer, StoreDbInitializer>();
 
             services.AddScoped(typeof(AuditInterceptor));
+
+            services.AddScoped<IFoodClassificationService, FoodClassificationService>();
 
             #endregion
 
